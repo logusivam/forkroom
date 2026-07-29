@@ -14,6 +14,7 @@ const PORT = process.env.PORT || 3001
 const CLIENT_URL = process.env.CLIENT_URL
 
 const app = express()
+app.set('trust proxy', 1)
 app.use(corsMiddleware)
 app.use(express.json())
 app.use('/health', healthRouter)

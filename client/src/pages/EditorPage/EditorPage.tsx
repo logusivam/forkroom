@@ -156,7 +156,6 @@ export function EditorPage() {
         <div className="flex-[7] relative h-full">
           <MonacoPanel
             provider={provider}
-            ydoc={ydoc}
             language={language}
             onEditorMount={setEditor}
           />

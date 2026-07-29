@@ -2,18 +2,16 @@ import { useEffect, useState } from 'react'
 import Editor from '@monaco-editor/react'
 import * as monaco from 'monaco-editor'
 import { WebsocketProvider } from 'y-websocket'
-import * as Y from 'yjs'
 import { useAwareness } from '../../../hooks/useAwareness'
 import { CursorOverlay } from '../CursorOverlay'
 
 interface MonacoPanelProps {
   provider: WebsocketProvider | null
-  ydoc: Y.Doc | null
   language: string
   onEditorMount?: (editor: monaco.editor.IStandaloneCodeEditor) => void
 }
 
-export function MonacoPanel({ provider, ydoc, language, onEditorMount }: MonacoPanelProps) {
+export function MonacoPanel({ provider, language, onEditorMount }: MonacoPanelProps) {
   const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null)
   const awarenessStates = useAwareness(provider)
 
