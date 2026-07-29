@@ -37,3 +37,4 @@ out/
 .env.test
 .agent
 doc
+implementation_plan.md
