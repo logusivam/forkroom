@@ -28,7 +28,7 @@ const io = new Server(httpServer, {
 io.on('connection', (socket) => registerRoomHandler(io, socket))
 
 // y-websocket — Yjs CRDT sync, mounted on /yjs path (same port as Socket.io)
-const wss = new WebSocket.Server({ server: httpServer, path: '/yjs' })
+const wss = new WebSocket.Server({ noServer: true })
 wss.on('connection', (ws, req) => {
   const origin = req.headers.origin
   if (CLIENT_URL && origin !== CLIENT_URL) {
@@ -39,6 +39,15 @@ wss.on('connection', (ws, req) => {
   setupWSConnection(ws, req)
 })
 
-httpServer.listen(PORT, () => {
+httpServer.on('upgrade', (request, socket, head) => {
+  const url = request.url || ''
+  if (url.startsWith('/yjs/')) {
+    wss.handleUpgrade(request, socket, head, (ws) => {
+      wss.emit('connection', ws, request)
+    })
+  }
+})
+
+httpServer.listen(PORT, '0.0.0.0', () => {
   logger.info({ port: PORT }, 'Forkroom server started')
 })

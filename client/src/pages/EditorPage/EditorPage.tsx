@@ -4,6 +4,7 @@ import { Helmet } from 'react-helmet-async'
 import { useRoom } from '../../hooks/useRoom'
 import { useYjs } from '../../hooks/useYjs'
 import { useConnectionStatus } from '../../hooks/useConnectionStatus'
+import { useCodeRunner } from '../../hooks/useCodeRunner'
 import { getCursorColour } from '../../lib/colourAssigner'
 import { MonacoPanel } from '../../components/editor/MonacoPanel'
 import { UserAvatarList } from '../../components/editor/UserAvatarList'
@@ -11,6 +12,7 @@ import { ConnectionStatusBar } from '../../components/common/ConnectionStatusBar
 import { ToastProvider } from '../../components/common/ToastProvider'
 import { TemporaryContentBanner } from '../../components/editor/TemporaryContentBanner'
 import { LanguageSelector } from '../../components/editor/LanguageSelector'
+import { OutputPanel } from '../../components/editor/OutputPanel'
 import { LanguageId } from '../../constants/languages'
 import { SOCKET_EVENTS } from '../../constants/socket-events'
 
@@ -33,6 +35,7 @@ export function EditorPage() {
   const { socketRef, users, toasts, setToasts } = useRoom(roomId || '', name, colour)
   const { provider, ydoc } = useYjs(roomId || '', name, colour, editor)
   const connectionStatus = useConnectionStatus(provider)
+  const { output, executeCode, clearOutput } = useCodeRunner(roomId || '', name, socketRef, ydoc)
 
   // Listen to remote language updates
   useEffect(() => {
@@ -128,6 +131,14 @@ export function EditorPage() {
           >
             Copy Link
           </button>
+          {language === 'javascript' && (
+            <button
+              onClick={executeCode}
+              className="bg-accent-green hover:bg-opacity-95 text-black px-4 py-1.5 rounded text-xs font-bold transition-colors cursor-pointer"
+            >
+              Run Code
+            </button>
+          )}
         </div>
 
         <div className="flex items-center space-x-6">
@@ -140,9 +151,9 @@ export function EditorPage() {
       {/* Amber Warning Banner */}
       <TemporaryContentBanner />
 
-      {/* Monaco Collaborative Panel */}
-      <main className="flex-1 p-6 overflow-hidden flex flex-col">
-        <div className="flex-1 relative">
+      {/* Monaco Collaborative Panel & Output Console split */}
+      <main className="flex-1 p-6 overflow-hidden flex flex-col md:flex-row gap-6">
+        <div className="flex-[7] relative h-full">
           <MonacoPanel
             provider={provider}
             ydoc={ydoc}
@@ -150,6 +161,11 @@ export function EditorPage() {
             onEditorMount={setEditor}
           />
         </div>
+        {language === 'javascript' && (
+          <div className="flex-[3] h-full">
+            <OutputPanel output={output} onClear={clearOutput} />
+          </div>
+        )}
       </main>
 
       {/* Toast Alert overlay */}
