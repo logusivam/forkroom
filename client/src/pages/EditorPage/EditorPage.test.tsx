@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { HelmetProvider } from 'react-helmet-async'
 import { EditorPage } from './EditorPage'
@@ -26,14 +26,26 @@ describe('EditorPage', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/', { replace: true })
   })
 
-  it('should render room heading if roomId is present', () => {
+  it('should render room heading if roomId is present after entering name', () => {
     mockRoomId = 'test-room-123'
     render(
       <HelmetProvider>
         <EditorPage />
       </HelmetProvider>
     )
-    const heading = screen.getByRole('heading', { name: /Room: test-room-123/i })
+
+    // Verify it initially renders name input form
+    expect(screen.getByText('Join Room')).toBeDefined()
+
+    // Simulate name entry
+    const input = screen.getByPlaceholderText('e.g. Loganathan')
+    fireEvent.change(input, { target: { value: 'Loganathan' } })
+
+    const submitBtn = screen.getByRole('button', { name: /Enter Room/i })
+    fireEvent.click(submitBtn)
+
+    // Verify editor page is now loaded
+    const heading = screen.getByText('ROOM:')
     expect(heading).toBeDefined()
     expect(mockNavigate).not.toHaveBeenCalled()
   })
