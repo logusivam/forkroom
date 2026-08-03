@@ -38,3 +38,4 @@ out/
 .agent
 doc
 implementation_plan.md
+err.md
