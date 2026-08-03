@@ -49,7 +49,7 @@ export function MonacoPanel({ provider, language, onEditorMount }: MonacoPanelPr
   }
 
   return (
-    <div className="relative flex-1 w-full h-full min-h-[500px] bg-surface-1 border border-border rounded-lg overflow-hidden">
+    <div className="relative flex-1 w-full h-full min-h-[300px] md:min-h-[500px] bg-surface-1 border border-border rounded-lg overflow-hidden">
       <Editor
         height="100%"
         width="100%"
@@ -57,7 +57,7 @@ export function MonacoPanel({ provider, language, onEditorMount }: MonacoPanelPr
         theme="vs-dark"
         options={{
           fontSize: 14,
-          fontFamily: 'JetBrains Mono',
+          fontFamily: 'JetBrains Mono, Consolas, "Courier New", monospace',
           minimap: { enabled: false },
           automaticLayout: true,
           scrollBeyondLastLine: false,

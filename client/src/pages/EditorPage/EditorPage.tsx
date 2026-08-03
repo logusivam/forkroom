@@ -131,14 +131,17 @@ export function EditorPage() {
           >
             Copy Link
           </button>
-          {language === 'javascript' && (
-            <button
-              onClick={executeCode}
-              className="bg-accent-green hover:bg-opacity-95 text-black px-4 py-1.5 rounded text-xs font-bold transition-colors cursor-pointer"
-            >
-              Run Code
-            </button>
-          )}
+          <button
+            onClick={executeCode}
+            disabled={language !== 'javascript'}
+            className={`px-4 py-1.5 rounded text-xs font-bold transition-all ${
+              language === 'javascript'
+                ? 'bg-accent-green hover:bg-opacity-95 text-black cursor-pointer'
+                : 'bg-surface-3 text-text-secondary cursor-not-allowed opacity-50'
+            }`}
+          >
+            Run Code
+          </button>
         </div>
 
         <div className="flex items-center space-x-6">
@@ -151,20 +154,17 @@ export function EditorPage() {
       {/* Amber Warning Banner */}
       <TemporaryContentBanner />
 
-      {/* Monaco Collaborative Panel & Output Console split */}
-      <main className="flex-1 p-6 overflow-hidden flex flex-col md:flex-row gap-6">
-        <div className="flex-[7] relative h-full">
+      <main className="flex-1 p-6 overflow-y-auto md:overflow-hidden flex flex-col md:flex-row gap-6">
+        <div className="flex-[7] relative h-[55vh] md:h-full">
           <MonacoPanel
             provider={provider}
             language={language}
             onEditorMount={setEditor}
           />
         </div>
-        {language === 'javascript' && (
-          <div className="flex-[3] h-full">
-            <OutputPanel output={output} onClear={clearOutput} />
-          </div>
-        )}
+        <div className="flex-[3] h-[30vh] md:h-full">
+          <OutputPanel output={output} onClear={clearOutput} language={language} />
+        </div>
       </main>
 
       {/* Toast Alert overlay */}

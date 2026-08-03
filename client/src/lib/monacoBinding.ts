@@ -5,8 +5,12 @@ export function bindYTextToMonaco(
   yText: Y.Text,
   model: monaco.editor.ITextModel
 ): () => void {
+  let isApplyingRemoteChanges = false
+
   // Initial sync from Y.Doc to Monaco
+  isApplyingRemoteChanges = true
   model.setValue(yText.toString())
+  isApplyingRemoteChanges = false
 
   // Remote changes: Y.Text → Monaco
   const observer = (event: Y.YTextEvent, transaction: Y.Transaction) => {
@@ -37,13 +41,18 @@ export function bindYTextToMonaco(
         index += (op.insert as string).length
       }
     })
-    if (edits.length > 0) model.applyEdits(edits)
+    if (edits.length > 0) {
+      isApplyingRemoteChanges = true
+      model.applyEdits(edits)
+      isApplyingRemoteChanges = false
+    }
   }
 
   yText.observe(observer)
 
   // Local changes: Monaco → Y.Text
   const disposable = model.onDidChangeContent((event) => {
+    if (isApplyingRemoteChanges) return
     Y.transact(
       yText.doc!,
       () => {

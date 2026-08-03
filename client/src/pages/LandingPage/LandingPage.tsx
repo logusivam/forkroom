@@ -250,53 +250,61 @@ export function LandingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-start relative">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 items-stretch relative">
             {/* Step 1 */}
-            <div className="bg-surface-1 border border-border rounded-lg p-5 relative min-h-[190px]">
-              <span className="absolute top-3 left-4 text-lg font-bold text-accent-green">01</span>
-              <div className="flex justify-center mb-4 mt-2">
-                <PlusCircle className="w-8 h-8 text-accent-green" />
+            <div className="bg-surface-1 border border-border rounded-lg p-5 relative min-h-[190px] h-full flex flex-col justify-between">
+              <div>
+                <span className="absolute top-3 left-4 text-lg font-bold text-accent-green">01</span>
+                <div className="flex justify-center mb-4 mt-2">
+                  <PlusCircle className="w-8 h-8 text-accent-green" />
+                </div>
+                <h3 className="text-sm font-bold text-text-primary text-center mb-2">Create a Room</h3>
+                <p className="text-xs text-text-secondary text-center leading-relaxed">
+                  Click 'Create New Room'. A unique shareable link is generated instantly &mdash; no sign up required.
+                </p>
               </div>
-              <h3 className="text-sm font-bold text-text-primary text-center mb-2">Create a Room</h3>
-              <p className="text-xs text-text-secondary text-center leading-relaxed">
-                Click 'Create New Room'. A unique shareable link is generated instantly &mdash; no sign up required.
-              </p>
             </div>
 
             {/* Step 2 */}
-            <div className="bg-surface-1 border border-border rounded-lg p-5 relative min-h-[190px]">
-              <span className="absolute top-3 left-4 text-lg font-bold text-accent-green">02</span>
-              <div className="flex justify-center mb-4 mt-2">
-                <Share2 className="w-8 h-8 text-accent-green" />
+            <div className="bg-surface-1 border border-border rounded-lg p-5 relative min-h-[190px] h-full flex flex-col justify-between">
+              <div>
+                <span className="absolute top-3 left-4 text-lg font-bold text-accent-green">02</span>
+                <div className="flex justify-center mb-4 mt-2">
+                  <Share2 className="w-8 h-8 text-accent-green" />
+                </div>
+                <h3 className="text-sm font-bold text-text-primary text-center mb-2">Share the Link</h3>
+                <p className="text-xs text-text-secondary text-center leading-relaxed">
+                  Copy the room URL and send it to your collaborator via Slack, Discord, email, or anywhere.
+                </p>
               </div>
-              <h3 className="text-sm font-bold text-text-primary text-center mb-2">Share the Link</h3>
-              <p className="text-xs text-text-secondary text-center leading-relaxed">
-                Copy the room URL and send it to your collaborator via Slack, Discord, email, or anywhere.
-              </p>
             </div>
 
             {/* Step 3 */}
-            <div className="bg-surface-1 border border-border rounded-lg p-5 relative min-h-[190px]">
-              <span className="absolute top-3 left-4 text-lg font-bold text-accent-green">03</span>
-              <div className="flex justify-center mb-4 mt-2">
-                <Code2 className="w-8 h-8 text-accent-green" />
+            <div className="bg-surface-1 border border-border rounded-lg p-5 relative min-h-[190px] h-full flex flex-col justify-between">
+              <div>
+                <span className="absolute top-3 left-4 text-lg font-bold text-accent-green">03</span>
+                <div className="flex justify-center mb-4 mt-2">
+                  <Code2 className="w-8 h-8 text-accent-green" />
+                </div>
+                <h3 className="text-sm font-bold text-text-primary text-center mb-2">Code Together</h3>
+                <p className="text-xs text-text-secondary text-center leading-relaxed">
+                  Both users see keystrokes instantly. Live cursors show exactly where each person is editing.
+                </p>
               </div>
-              <h3 className="text-sm font-bold text-text-primary text-center mb-2">Code Together</h3>
-              <p className="text-xs text-text-secondary text-center leading-relaxed">
-                Both users see keystrokes instantly. Live cursors show exactly where each person is editing.
-              </p>
             </div>
 
             {/* Step 4 */}
-            <div className="bg-surface-1 border border-border rounded-lg p-5 relative min-h-[190px]">
-              <span className="absolute top-3 left-4 text-lg font-bold text-accent-green">04</span>
-              <div className="flex justify-center mb-4 mt-2">
-                <Play className="w-8 h-8 text-accent-green" />
+            <div className="bg-surface-1 border border-border rounded-lg p-5 relative min-h-[190px] h-full flex flex-col justify-between">
+              <div>
+                <span className="absolute top-3 left-4 text-lg font-bold text-accent-green">04</span>
+                <div className="flex justify-center mb-4 mt-2">
+                  <Play className="w-8 h-8 text-accent-green" />
+                </div>
+                <h3 className="text-sm font-bold text-text-primary text-center mb-2">Run & Share Output</h3>
+                <p className="text-xs text-text-secondary text-center leading-relaxed">
+                  Click Run or press Ctrl+Enter to execute JavaScript. All collaborators see the output simultaneously.
+                </p>
               </div>
-              <h3 className="text-sm font-bold text-text-primary text-center mb-2">Run & Share Output</h3>
-              <p className="text-xs text-text-secondary text-center leading-relaxed">
-                Click Run or press Ctrl+Enter to execute JavaScript. All collaborators see the output simultaneously.
-              </p>
             </div>
           </div>
         </div>
