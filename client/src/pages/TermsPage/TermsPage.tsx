@@ -97,7 +97,7 @@ export function TermsPage() {
                 href="https://github.com/logusivam/forkroom"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-accent-blue hover:underline"
+                className="text-accent-blue hover:underline break-all"
               >
                 https://github.com/logusivam/forkroom
               </a>
