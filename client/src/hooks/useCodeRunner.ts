@@ -13,7 +13,8 @@ export function useCodeRunner(
   roomId: string,
   name: string,
   socket: Socket | null,
-  ydoc: any
+  ydoc: any,
+  language: string
 ) {
   const [output, setOutput] = useState<RunOutput | null>(null)
 
@@ -35,7 +36,7 @@ export function useCodeRunner(
     if (!ydoc) return
 
     const code = ydoc.getText('codetext').toString()
-    const result = runCode(code)
+    const result = runCode(code, language)
 
     const runData: RunOutput = {
       output: result,

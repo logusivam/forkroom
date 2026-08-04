@@ -20,7 +20,7 @@ describe('useCodeRunner', () => {
 
   it('should run code and emit code-output via socket', () => {
     yText.insert(0, 'console.log("runner works")')
-    const { result } = renderHook(() => useCodeRunner('room123', 'UserA', socketMock, ydoc))
+    const { result } = renderHook(() => useCodeRunner('room123', 'UserA', socketMock, ydoc, 'javascript'))
 
     act(() => {
       result.current.executeCode()
@@ -36,7 +36,7 @@ describe('useCodeRunner', () => {
 
   it('should clear outputs', () => {
     yText.insert(0, '123')
-    const { result } = renderHook(() => useCodeRunner('room123', 'UserA', socketMock, ydoc))
+    const { result } = renderHook(() => useCodeRunner('room123', 'UserA', socketMock, ydoc, 'javascript'))
 
     act(() => {
       result.current.executeCode()

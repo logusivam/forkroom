@@ -4,7 +4,7 @@ import { OutputPanel } from './OutputPanel'
 
 describe('OutputPanel', () => {
   it('should render placeholder text if no output', () => {
-    render(<OutputPanel output={null} onClear={vi.fn()} language="javascript" />)
+    render(<OutputPanel output={null} onClear={vi.fn()} />)
     expect(screen.getByText(/No output/i)).toBeDefined()
   })
 
@@ -16,7 +16,7 @@ describe('OutputPanel', () => {
       timestamp: Date.now(),
     }
 
-    render(<OutputPanel output={output} onClear={mockClear} language="javascript" />)
+    render(<OutputPanel output={output} onClear={mockClear} />)
     expect(screen.getByText('test result line')).toBeDefined()
     expect(screen.getByText(/UserA/)).toBeDefined()
 
@@ -25,8 +25,8 @@ describe('OutputPanel', () => {
     expect(mockClear).toHaveBeenCalled()
   })
 
-  it('should render warning if language is not javascript', () => {
-    render(<OutputPanel output={null} onClear={vi.fn()} language="python" />)
-    expect(screen.getByText(/JavaScript only/i)).toBeDefined()
+  it('should render placeholder text for other languages', () => {
+    render(<OutputPanel output={null} onClear={vi.fn()} />)
+    expect(screen.getByText(/No output/i)).toBeDefined()
   })
 })

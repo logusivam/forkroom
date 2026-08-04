@@ -13,6 +13,7 @@ import { ToastProvider } from '../../components/common/ToastProvider'
 import { TemporaryContentBanner } from '../../components/editor/TemporaryContentBanner'
 import { LanguageSelector } from '../../components/editor/LanguageSelector'
 import { OutputPanel } from '../../components/editor/OutputPanel'
+import { Menu, X, Copy, Play, Check } from 'lucide-react'
 import { LanguageId } from '../../constants/languages'
 import { SOCKET_EVENTS } from '../../constants/socket-events'
 
@@ -46,7 +47,7 @@ export function EditorPage() {
   const { socket, users, toasts, setToasts } = useRoom(roomId || '', name, colour)
   const { provider, ydoc } = useYjs(roomId || '', name, colour, editor)
   const connectionStatus = useConnectionStatus(provider)
-  const { output, executeCode, clearOutput } = useCodeRunner(roomId || '', name, socket, ydoc)
+  const { output, executeCode, clearOutput } = useCodeRunner(roomId || '', name, socket, ydoc, language)
 
   // Listen to remote language updates
   useEffect(() => {
@@ -77,6 +78,9 @@ export function EditorPage() {
     }
   }
 
+  const [editorMenuOpen, setEditorMenuOpen] = useState(false)
+  const [copied, setCopied] = useState(false)
+
   const handleLanguageChange = (newLang: LanguageId) => {
     setLanguage(newLang)
     if (socket && roomId) {
@@ -88,6 +92,16 @@ export function EditorPage() {
     navigator.clipboard.writeText(window.location.href)
     const toastId = Math.random().toString(36).substring(2, 9)
     setToasts((prev) => [...prev, { id: toastId, message: 'Room link copied to clipboard!', type: 'join' }])
+  }
+
+  const handleCopyRoomCode = () => {
+    if (!roomId) return
+    navigator.clipboard.writeText(roomId)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+
+    const toastId = Math.random().toString(36).substring(2, 9)
+    setToasts((prev) => [...prev, { id: toastId, message: 'Room ID copied to clipboard!', type: 'join' }])
   }
 
   if (!roomId) return null
@@ -134,12 +148,30 @@ export function EditorPage() {
       </Helmet>
 
       {/* Header controls bar */}
-      <header className="flex items-center justify-between px-6 py-4 bg-surface-2 border-b border-border select-none">
+      <header className="relative flex items-center justify-between px-6 py-4 bg-surface-2 border-b border-border select-none z-50">
+        {/* Left Side: Brand, status, and avatars (Always visible) */}
         <div className="flex items-center space-x-4">
           <span className="font-bold text-accent-green text-lg tracking-wider">FORKROOM</span>
-          <div className="flex items-center bg-surface-3 px-3 py-1.5 border border-border rounded-md text-xs font-medium">
-            <span className="text-text-secondary mr-2">ROOM:</span>
-            <span className="text-text-primary uppercase tracking-wide">{roomId}</span>
+          <ConnectionStatusBar status={connectionStatus} />
+          <UserAvatarList users={users} />
+        </div>
+
+        {/* Desktop Header Controls: Room code, Copy Link, Run Code, Language (Desktop only) */}
+        <div className="hidden md:flex items-center space-x-4">
+          <div className="flex items-center bg-surface-3 px-3 py-1.5 border border-border rounded-md text-xs font-medium space-x-2">
+            <span className="text-text-secondary">ROOM:</span>
+            <span className="text-text-primary uppercase tracking-wide font-mono">{roomId}</span>
+            <button
+              onClick={handleCopyRoomCode}
+              className="text-text-secondary hover:text-text-primary focus:outline-none ml-1 cursor-pointer"
+              title="Copy Room ID"
+            >
+              {copied ? (
+                <Check className="w-3.5 h-3.5 text-accent-green" />
+              ) : (
+                <Copy className="w-3.5 h-3.5" />
+              )}
+            </button>
           </div>
           <button
             onClick={handleCopyLink}
@@ -153,13 +185,67 @@ export function EditorPage() {
           >
             Run Code
           </button>
+          <LanguageSelector value={language} onChange={handleLanguageChange} />
         </div>
 
-        <div className="flex items-center space-x-6">
-          <LanguageSelector value={language} onChange={handleLanguageChange} />
-          <UserAvatarList users={users} />
-          <ConnectionStatusBar status={connectionStatus} />
-        </div>
+        {/* Mobile Hamburger Toggle Button (Mobile only) */}
+        <button
+          onClick={() => setEditorMenuOpen(!editorMenuOpen)}
+          className="flex md:hidden text-text-primary hover:text-accent-green transition-colors focus:outline-none cursor-pointer"
+          aria-label="Toggle Controls Menu"
+        >
+          {editorMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+        </button>
+
+        {/* Mobile Controls Dropdown (Mobile only) */}
+        {editorMenuOpen && (
+          <div className="absolute top-14 left-0 w-full bg-surface-2 border-b border-border p-4 flex flex-col space-y-4 z-50 shadow-lg md:hidden">
+            {/* Room ID with Copy Tick */}
+            <div className="flex items-center justify-between bg-surface-3 px-3 py-2 border border-border rounded text-xs font-semibold">
+              <span className="text-text-secondary">Room ID:</span>
+              <div className="flex items-center space-x-2">
+                <span className="text-text-primary font-mono uppercase">{roomId}</span>
+                <button
+                  onClick={handleCopyRoomCode}
+                  className="text-text-secondary hover:text-text-primary focus:outline-none cursor-pointer"
+                >
+                  {copied ? (
+                    <Check className="w-3.5 h-3.5 text-accent-green" />
+                  ) : (
+                    <Copy className="w-3.5 h-3.5" />
+                  )}
+                </button>
+              </div>
+            </div>
+            {/* Copy Link invitation */}
+            <button
+              onClick={() => {
+                handleCopyLink()
+                setEditorMenuOpen(false)
+              }}
+              className="flex items-center justify-center space-x-2 bg-surface-3 border border-border hover:bg-opacity-80 px-4 py-2 rounded text-xs font-semibold cursor-pointer"
+            >
+              <Copy className="w-4 h-4 text-accent-blue" />
+              <span>Copy Invitation Link</span>
+            </button>
+            {/* Run Code */}
+            <button
+              onClick={() => {
+                executeCode()
+                setEditorMenuOpen(false)
+              }}
+              className="flex items-center justify-center space-x-2 bg-accent-green hover:bg-opacity-95 text-black px-4 py-2 rounded text-xs font-bold cursor-pointer"
+            >
+              <Play className="w-4 h-4" />
+              <span>Run Code</span>
+            </button>
+            {/* Language Selector */}
+            <div className="flex items-center justify-between border border-border bg-surface-3 rounded px-3 py-2">
+              <span className="text-xs font-semibold text-text-secondary">Language:</span>
+              <LanguageSelector value={language} onChange={handleLanguageChange} />
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Amber Warning Banner */}
@@ -174,7 +260,7 @@ export function EditorPage() {
           />
         </div>
         <div className="flex-[3] h-[30vh] md:h-full">
-          <OutputPanel output={output} onClear={clearOutput} language={language} />
+          <OutputPanel output={output} onClear={clearOutput} />
         </div>
       </main>
 
