@@ -5,7 +5,6 @@ import * as Y from 'yjs'
 
 describe('useCodeRunner', () => {
   let socketMock: any
-  let socketRef: any
   let ydoc: Y.Doc
   let yText: Y.Text
 
@@ -15,14 +14,13 @@ describe('useCodeRunner', () => {
       off: vi.fn(),
       emit: vi.fn(),
     }
-    socketRef = { current: socketMock }
     ydoc = new Y.Doc()
     yText = ydoc.getText('codetext')
   })
 
   it('should run code and emit code-output via socket', () => {
     yText.insert(0, 'console.log("runner works")')
-    const { result } = renderHook(() => useCodeRunner('room123', 'UserA', socketRef, ydoc))
+    const { result } = renderHook(() => useCodeRunner('room123', 'UserA', socketMock, ydoc))
 
     act(() => {
       result.current.executeCode()
@@ -38,7 +36,7 @@ describe('useCodeRunner', () => {
 
   it('should clear outputs', () => {
     yText.insert(0, '123')
-    const { result } = renderHook(() => useCodeRunner('room123', 'UserA', socketRef, ydoc))
+    const { result } = renderHook(() => useCodeRunner('room123', 'UserA', socketMock, ydoc))
 
     act(() => {
       result.current.executeCode()

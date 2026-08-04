@@ -1,4 +1,4 @@
-import { useEffect, useState, MutableRefObject } from 'react'
+import { useEffect, useState } from 'react'
 import { Socket } from 'socket.io-client'
 import { runCode } from '../lib/evalSandbox'
 import { SOCKET_EVENTS } from '../constants/socket-events'
@@ -12,13 +12,12 @@ interface RunOutput {
 export function useCodeRunner(
   roomId: string,
   name: string,
-  socketRef: MutableRefObject<Socket | null>,
+  socket: Socket | null,
   ydoc: any
 ) {
   const [output, setOutput] = useState<RunOutput | null>(null)
 
   useEffect(() => {
-    const socket = socketRef.current
     if (!socket) return
 
     const handleCodeOutput = (data: RunOutput) => {
@@ -30,7 +29,7 @@ export function useCodeRunner(
     return () => {
       socket.off(SOCKET_EVENTS.CODE_OUTPUT, handleCodeOutput)
     }
-  }, [socketRef])
+  }, [socket])
 
   const executeCode = () => {
     if (!ydoc) return
@@ -46,8 +45,8 @@ export function useCodeRunner(
 
     setOutput(runData)
 
-    if (socketRef.current) {
-      socketRef.current.emit(SOCKET_EVENTS.RUN_CODE, {
+    if (socket) {
+      socket.emit(SOCKET_EVENTS.RUN_CODE, {
         roomId,
         output: result,
         runBy: name,

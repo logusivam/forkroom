@@ -25,6 +25,17 @@ export function EditorPage() {
   const [colour, setColour] = useState<string>('')
   const [language, setLanguage] = useState<string>('javascript')
   const [editor, setEditor] = useState<any>(null)
+  const [hasPreviousName, setHasPreviousName] = useState(false)
+
+  useEffect(() => {
+    if (roomId) {
+      const savedName = localStorage.getItem(`forkroom_name_${roomId}`)
+      if (savedName) {
+        setInputName(savedName)
+        setHasPreviousName(true)
+      }
+    }
+  }, [roomId])
 
   useEffect(() => {
     if (!roomId) {
@@ -32,14 +43,13 @@ export function EditorPage() {
     }
   }, [roomId, navigate])
 
-  const { socketRef, users, toasts, setToasts } = useRoom(roomId || '', name, colour)
+  const { socket, users, toasts, setToasts } = useRoom(roomId || '', name, colour)
   const { provider, ydoc } = useYjs(roomId || '', name, colour, editor)
   const connectionStatus = useConnectionStatus(provider)
-  const { output, executeCode, clearOutput } = useCodeRunner(roomId || '', name, socketRef, ydoc)
+  const { output, executeCode, clearOutput } = useCodeRunner(roomId || '', name, socket, ydoc)
 
   // Listen to remote language updates
   useEffect(() => {
-    const socket = socketRef.current
     if (!socket) return
 
     socket.on(SOCKET_EVENTS.LANGUAGE_CHANGED, ({ language: newLang }: { language: string }) => {
@@ -53,7 +63,7 @@ export function EditorPage() {
     return () => {
       socket.off(SOCKET_EVENTS.LANGUAGE_CHANGED)
     }
-  }, [socketRef])
+  }, [socket])
 
   const handleJoin = (e: React.FormEvent) => {
     e.preventDefault()
@@ -62,12 +72,15 @@ export function EditorPage() {
     const randomColor = getCursorColour(Math.floor(Math.random() * 8))
     setColour(randomColor)
     setName(inputName.trim())
+    if (roomId) {
+      localStorage.setItem(`forkroom_name_${roomId}`, inputName.trim())
+    }
   }
 
   const handleLanguageChange = (newLang: LanguageId) => {
     setLanguage(newLang)
-    if (socketRef.current && roomId) {
-      socketRef.current.emit(SOCKET_EVENTS.LANGUAGE_CHANGE, { roomId, language: newLang })
+    if (socket && roomId) {
+      socket.emit(SOCKET_EVENTS.LANGUAGE_CHANGE, { roomId, language: newLang })
     }
   }
 
@@ -96,9 +109,12 @@ export function EditorPage() {
             required
             value={inputName}
             onChange={(e) => setInputName(e.target.value)}
+            disabled={hasPreviousName}
             placeholder="e.g. Loganathan"
             maxLength={15}
-            className="w-full bg-surface-3 border border-border rounded px-3 py-2 text-sm focus:outline-none mb-4"
+            className={`w-full bg-surface-3 border border-border rounded px-3 py-2 text-sm focus:outline-none mb-4 focus:border-accent-green transition-colors ${
+              hasPreviousName ? 'cursor-not-allowed opacity-75' : ''
+            }`}
           />
           <button
             type="submit"
@@ -123,7 +139,7 @@ export function EditorPage() {
           <span className="font-bold text-accent-green text-lg tracking-wider">FORKROOM</span>
           <div className="flex items-center bg-surface-3 px-3 py-1.5 border border-border rounded-md text-xs font-medium">
             <span className="text-text-secondary mr-2">ROOM:</span>
-            <span className="text-text-primary select-all">{roomId}</span>
+            <span className="text-text-primary uppercase tracking-wide">{roomId}</span>
           </div>
           <button
             onClick={handleCopyLink}
@@ -133,12 +149,7 @@ export function EditorPage() {
           </button>
           <button
             onClick={executeCode}
-            disabled={language !== 'javascript'}
-            className={`px-4 py-1.5 rounded text-xs font-bold transition-all ${
-              language === 'javascript'
-                ? 'bg-accent-green hover:bg-opacity-95 text-black cursor-pointer'
-                : 'bg-surface-3 text-text-secondary cursor-not-allowed opacity-50'
-            }`}
+            className="bg-accent-green hover:bg-opacity-95 text-black px-4 py-1.5 rounded text-xs font-bold transition-all cursor-pointer"
           >
             Run Code
           </button>

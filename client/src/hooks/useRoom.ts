@@ -7,39 +7,42 @@ const SOCKET_URL = import.meta.env.VITE_SERVER_URL || 'ws://localhost:3001'
 
 export function useRoom(roomId: string, name: string, colour: string) {
   const socketRef = useRef<Socket | null>(null)
+  const [socket, setSocket] = useState<Socket | null>(null)
   const [users, setUsers] = useState<RoomUser[]>([])
   const [toasts, setToasts] = useState<{ id: string; message: string; type: 'join' | 'leave' }[]>([])
 
   useEffect(() => {
     if (!roomId || !name) return
 
-    const socket = io(SOCKET_URL)
-    socketRef.current = socket
+    const socketInstance = io(SOCKET_URL)
+    socketRef.current = socketInstance
+    setSocket(socketInstance)
 
-    socket.on('connect', () => {
-      socket.emit(SOCKET_EVENTS.JOIN_ROOM, { roomId, name, colour })
+    socketInstance.on('connect', () => {
+      socketInstance.emit(SOCKET_EVENTS.JOIN_ROOM, { roomId, name, colour })
     })
 
-    socket.on(SOCKET_EVENTS.ROOM_STATE, ({ users: roomUsers }: { users: RoomUser[] }) => {
+    socketInstance.on(SOCKET_EVENTS.ROOM_STATE, ({ users: roomUsers }: { users: RoomUser[] }) => {
       setUsers(roomUsers)
     })
 
-    socket.on(SOCKET_EVENTS.USER_JOINED, (user: RoomUser) => {
+    socketInstance.on(SOCKET_EVENTS.USER_JOINED, (user: RoomUser) => {
       setUsers((prev) => [...prev.filter((u) => u.id !== user.id), user])
       const toastId = Math.random().toString(36).substring(2, 9)
       setToasts((prev) => [...prev, { id: toastId, message: `${user.name} joined the room`, type: 'join' }])
     })
 
-    socket.on(SOCKET_EVENTS.USER_LEFT, ({ id, name: leftName }: { id: string; name: string }) => {
+    socketInstance.on(SOCKET_EVENTS.USER_LEFT, ({ id, name: leftName }: { id: string; name: string }) => {
       setUsers((prev) => prev.filter((u) => u.id !== id))
       const toastId = Math.random().toString(36).substring(2, 9)
       setToasts((prev) => [...prev, { id: toastId, message: `${leftName} left the room`, type: 'leave' }])
     })
 
     return () => {
-      socket.disconnect()
+      socketInstance.disconnect()
+      setSocket(null)
     }
   }, [roomId, name, colour])
 
-  return { socketRef, users, toasts, setToasts }
+  return { socket, socketRef, users, toasts, setToasts }
 }

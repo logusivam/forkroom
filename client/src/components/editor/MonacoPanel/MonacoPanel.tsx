@@ -57,7 +57,6 @@ export function MonacoPanel({ provider, language, onEditorMount }: MonacoPanelPr
         theme="vs-dark"
         options={{
           fontSize: 14,
-          fontFamily: 'JetBrains Mono, Consolas, "Courier New", monospace',
           minimap: { enabled: false },
           automaticLayout: true,
           scrollBeyondLastLine: false,

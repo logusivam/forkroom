@@ -67,32 +67,48 @@ export function CursorOverlay({ editor, awarenessStates }: CursorOverlayProps) {
 
   return (
     <div className="absolute inset-0 pointer-events-none overflow-hidden z-10">
-      {floatingCursors.map((cursor) => (
-        <div
-          key={cursor.clientId}
-          style={{
-            position: 'absolute',
-            left: `${cursor.x}px`,
-            top: `${cursor.y}px`,
-            transform: 'translateY(-100%)',
-            zIndex: 100,
-          }}
-          className="flex flex-col items-start transition-all duration-75"
-        >
-          {/* Custom Cursor Line */}
+      {floatingCursors.map((cursor) => {
+        const isNearTop = cursor.y < 25
+        return (
           <div
-            style={{ backgroundColor: cursor.colour, height: '18px', width: '2px' }}
-            className="absolute left-0 top-[18px]"
-          />
-          {/* Name Tag Pill */}
-          <div
-            style={{ backgroundColor: cursor.colour }}
-            className="px-1.5 py-0.5 rounded text-[10px] font-bold text-black whitespace-nowrap shadow select-none"
+            key={cursor.clientId}
+            style={{
+              position: 'absolute',
+              left: `${cursor.x}px`,
+              top: `${cursor.y}px`,
+              transform: isNearTop ? 'translateY(0px)' : 'translateY(-100%)',
+              zIndex: 100,
+            }}
+            className="flex flex-col items-start transition-all duration-75"
           >
-            {cursor.name}
+            {/* If not near top, name pill is rendered above cursor line */}
+            {!isNearTop && (
+              <div
+                style={{ backgroundColor: cursor.colour }}
+                className="px-1.5 py-0.5 rounded text-[10px] font-bold text-black whitespace-nowrap shadow select-none"
+              >
+                {cursor.name}
+              </div>
+            )}
+            
+            {/* Custom Cursor Line */}
+            <div
+              style={{ backgroundColor: cursor.colour, height: '18px', width: '2px' }}
+              className={isNearTop ? 'relative' : 'absolute left-0 top-[18px]'}
+            />
+            
+            {/* If near top, name pill is rendered below cursor line */}
+            {isNearTop && (
+              <div
+                style={{ backgroundColor: cursor.colour }}
+                className="px-1.5 py-0.5 rounded text-[10px] font-bold text-black whitespace-nowrap shadow select-none"
+              >
+                {cursor.name}
+              </div>
+            )}
           </div>
-        </div>
-      ))}
+        )
+      })}
     </div>
   )
 }
