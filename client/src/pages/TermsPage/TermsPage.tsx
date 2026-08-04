@@ -17,11 +17,11 @@ export function TermsPage() {
 
       <Header />
 
-      <main className="flex-grow max-w-4xl mx-auto px-6 py-16 select-none">
+      <main className="w-full flex-grow max-w-4xl mx-auto px-6 py-16 select-none">
         <h1 className="text-4xl font-extrabold mb-2 text-text-primary">Terms of Service</h1>
         <p className="text-sm text-text-secondary mb-10">Last updated: 1 August 2026</p>
 
-        <div className="space-y-8 text-sm text-text-secondary leading-relaxed bg-surface-2 border border-border rounded-lg p-4 sm:p-8">
+        <div className="w-full space-y-8 text-sm text-text-secondary leading-relaxed bg-surface-2 border border-border rounded-lg p-4 sm:p-8">
           <section>
             <h2 className="text-lg font-bold text-text-primary mb-3">1. Acceptance of Terms</h2>
             <p>

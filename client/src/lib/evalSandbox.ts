@@ -53,7 +53,18 @@ function transpilePythonToJS(pyCode: string): string {
       if (match) {
         const keyword = match[1] === 'elif' ? 'else if' : match[1]
         const cond = match[2].trim()
-        jsLine = `${keyword} ${cond ? '(' + cond + ')' : ''} {`
+        if (keyword === 'for') {
+          const forMatch = cond.match(/^(\w+)\s+in\s+(.*)$/)
+          if (forMatch) {
+            jsLine = `for (var ${forMatch[1]} of ${forMatch[2]}) {`
+          } else {
+            jsLine = `for (${cond}) {`
+          }
+        } else if (keyword === 'else') {
+          jsLine = `else {`
+        } else {
+          jsLine = `${keyword} (${cond}) {`
+        }
         indentStack.push(indent)
       }
     }

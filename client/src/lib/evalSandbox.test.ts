@@ -59,4 +59,14 @@ print(greet(user_name))
     `
     expect(runCode(code, 'python')).toBe('Hello, Alice!')
   })
+
+  it('should execute Python loop iteration with conditionals', () => {
+    const code = `
+numbers = [2, 7, 4, 9, 5, 8]
+for num in numbers:
+    if num > 5:
+        print(f"Match found: {num}")
+    `
+    expect(runCode(code, 'python')).toBe('Match found: 7\nMatch found: 9\nMatch found: 8')
+  })
 })
