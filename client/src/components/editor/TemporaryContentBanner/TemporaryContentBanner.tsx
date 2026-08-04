@@ -1,14 +1,7 @@
 import { useState } from 'react'
 
 export function TemporaryContentBanner() {
-  const [visible, setVisible] = useState(() => {
-    return localStorage.getItem('forkroom_banner_dismissed') !== 'true'
-  })
-
-  const handleDismiss = () => {
-    setVisible(false)
-    localStorage.setItem('forkroom_banner_dismissed', 'true')
-  }
+  const [visible, setVisible] = useState(true)
 
   if (!visible) return null
 
@@ -18,7 +11,7 @@ export function TemporaryContentBanner() {
         ⚠️ Content is temporary. All code is lost when all collaborators leave the room. Copy your code before closing the tab.
       </span>
       <button
-        onClick={handleDismiss}
+        onClick={() => setVisible(false)}
         className="ml-4 font-bold hover:text-text-primary focus:outline-none text-sm leading-none"
       >
         Dismiss

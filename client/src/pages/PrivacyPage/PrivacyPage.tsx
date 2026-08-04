@@ -21,7 +21,7 @@ export function PrivacyPage() {
         <h1 className="text-4xl font-extrabold mb-2 text-text-primary">Privacy Policy</h1>
         <p className="text-sm text-text-secondary mb-10">Last updated: 1 August 2026</p>
 
-        <div className="space-y-8 text-sm text-text-secondary leading-relaxed bg-surface-2 border border-border rounded-lg p-8">
+        <div className="space-y-8 text-sm text-text-secondary leading-relaxed bg-surface-2 border border-border rounded-lg p-4 sm:p-8">
           <section>
             <h2 className="text-lg font-bold text-text-primary mb-3">1. What Data We Collect</h2>
             <p>Forkroom collects minimal data to operate the Service:</p>

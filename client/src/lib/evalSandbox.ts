@@ -1,3 +1,82 @@
+function transpilePythonToJS(pyCode: string): string {
+  const lines = pyCode.split('\n')
+  const jsLines: string[] = []
+  const indentStack: number[] = []
+
+  for (let line of lines) {
+    const trimmed = line.trim()
+    if (!trimmed) {
+      jsLines.push('')
+      continue
+    }
+
+    // Measure indentation
+    const indent = line.length - line.trimStart().length
+
+    // If indent is less than or equal to top block's indent, close those blocks
+    while (indentStack.length > 0 && indent <= indentStack[indentStack.length - 1]) {
+      indentStack.pop()
+      jsLines.push('}'.padStart(indentStack.length + 1))
+    }
+
+    let jsLine = trimmed
+
+    // Translate: def foo(bar): -> function foo(bar) {
+    if (trimmed.startsWith('def ')) {
+      const match = trimmed.match(/^def\s+(\w+)\s*\(([^)]*)\)\s*:/)
+      if (match) {
+        jsLine = `function ${match[1]}(${match[2]}) {`
+        indentStack.push(indent)
+      }
+    }
+    // Translate: print(...) -> console.log(...)
+    else if (trimmed.startsWith('print(')) {
+      jsLine = jsLine.replace(/^print\s*\(/, 'console.log(')
+    }
+    // Translate: print ... (without parenthesis) -> console.log(...)
+    else if (trimmed.startsWith('print ')) {
+      jsLine = `console.log(${trimmed.substring(6)})`
+    }
+    // Translate python f-strings: f"Hello {name}" -> `Hello ${name}`
+    jsLine = jsLine.replace(/f"([^"]*)"/g, (_, g) => {
+      const replaced = g.replace(/\{([^}]+)\}/g, '${$1}')
+      return '`' + replaced + '`'
+    })
+    jsLine = jsLine.replace(/f'([^']*)'/g, (_, g) => {
+      const replaced = g.replace(/\{([^}]+)\}/g, '${$1}')
+      return '`' + replaced + '`'
+    })
+
+    // If line ends with colon and isn't def, handle if/for/while
+    if (trimmed.endsWith(':') && !trimmed.startsWith('def ')) {
+      const match = trimmed.match(/^(if|for|while|elif|else)\b(.*):$/)
+      if (match) {
+        const keyword = match[1] === 'elif' ? 'else if' : match[1]
+        const cond = match[2].trim()
+        jsLine = `${keyword} ${cond ? '(' + cond + ')' : ''} {`
+        indentStack.push(indent)
+      }
+    }
+    // Translate variable assignment: x = value -> var x = value (to support strict mode)
+    else {
+      const assignMatch = jsLine.match(/^([a-zA-Z_]\w*)\s*=\s*(.*)$/)
+      if (assignMatch) {
+        jsLine = `var ${assignMatch[1]} = ${assignMatch[2]}`
+      }
+    }
+
+    jsLines.push(' '.repeat(indent) + jsLine)
+  }
+
+  // Close any remaining blocks
+  while (indentStack.length > 0) {
+    indentStack.pop()
+    jsLines.push('}')
+  }
+
+  return jsLines.join('\n')
+}
+
 export function runCode(code: string, language: string = 'javascript'): string {
   const logs: string[] = []
   const originalLog = console.log
@@ -14,11 +93,11 @@ export function runCode(code: string, language: string = 'javascript'): string {
     if (lang === 'javascript' || lang === 'typescript') {
       let codeToRun = code
       if (lang === 'typescript') {
-        // Strip TypeScript annotations using simple regexes to run in JS sandbox
+        // Strip TypeScript annotations generically to run in JS sandbox
         codeToRun = code
-          .replace(/interface\s+\w+\s*\{[^}]*\}/g, '')
-          .replace(/type\s+\w+\s*=\s*[^;]+;/g, '')
-          .replace(/:\s*(string|number|boolean|any|void|unknown|never|object|string\[\]|number\[\]|boolean\[\])\b/g, '')
+          .replace(/interface\s+\w+\s*\{[\s\S]*?\}/g, '')
+          .replace(/type\s+\w+\s*=\s*[\s\S]*?;/g, '')
+          .replace(/:\s*[A-Z_a-z]\w*(\[\])?/g, '')
           .replace(/<\w+>/g, '')
       }
       // eslint-disable-next-line no-eval
@@ -37,7 +116,6 @@ export function runCode(code: string, language: string = 'javascript'): string {
         eval(jsCode)
         scriptExecuted = true
       }
-      // Strip HTML tags to get pure text content for display feedback
       const textOnly = code.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
       logs.push(`[HTML Render Success]`)
       if (textOnly) {
@@ -47,7 +125,6 @@ export function runCode(code: string, language: string = 'javascript'): string {
         logs.push(`Executed script tags successfully.`)
       }
     } else if (lang === 'css') {
-      // Verify basic bracket balance
       const openCount = (code.match(/\{/g) || []).length
       const closeCount = (code.match(/\}/g) || []).length
       if (openCount === closeCount) {
@@ -61,49 +138,11 @@ export function runCode(code: string, language: string = 'javascript'): string {
       logs.push(`[JSON Valid] Parsed successfully:`)
       logs.push(JSON.stringify(parsed, null, 2))
     } else if (lang === 'python') {
-      // Simple Python print statement evaluator
-      const lines = code.split('\n')
-      const variables: Record<string, unknown> = {}
-      let printed = false
-
-      for (let line of lines) {
-        line = line.trim()
-        if (!line || line.startsWith('#')) continue
-
-        const printMatch = line.match(/^print\s*\((.*)\)$/)
-        if (printMatch) {
-          const content = printMatch[1].trim()
-          if ((content.startsWith('"') && content.endsWith('"')) || (content.startsWith("'") && content.endsWith("'"))) {
-            logs.push(content.substring(1, content.length - 1))
-          } else if (variables[content] !== undefined) {
-            logs.push(String(variables[content]))
-          } else {
-            try {
-              // eslint-disable-next-line no-eval
-              logs.push(String(eval(content)))
-            } catch {
-              logs.push(content)
-            }
-          }
-          printed = true
-          continue
-        }
-
-        const assignMatch = line.match(/^([a-zA-Z_]\w*)\s*=\s*(.*)$/)
-        if (assignMatch) {
-          const varName = assignMatch[1]
-          const valStr = assignMatch[2].trim()
-          try {
-            // eslint-disable-next-line no-eval
-            variables[varName] = eval(valStr)
-          } catch {
-            variables[varName] = valStr
-          }
-          continue
-        }
-      }
-      if (!printed) {
-        logs.push(`[Python Success] Script checked. No print outputs generated.`)
+      const jsCode = transpilePythonToJS(code)
+      // eslint-disable-next-line no-eval
+      const result = eval(jsCode)
+      if (result !== undefined && logs.length === 0) {
+        logs.push(String(result))
       }
     } else {
       logs.push(`Language ${language} parsed. Execution logs unavailable.`)

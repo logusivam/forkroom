@@ -24,9 +24,19 @@ describe('evalSandbox', () => {
     expect(runCode('')).toBe('(no output)')
   })
 
-  it('should transpile and execute TypeScript code', () => {
-    const code = 'const x: number = 42; console.log(x);'
-    expect(runCode(code, 'typescript')).toBe('42')
+  it('should transpile and execute TypeScript code with interfaces', () => {
+    const code = `
+      interface User {
+        id: number;
+        name: string;
+      }
+      const user: User = {
+        id: 1,
+        name: "Bob"
+      };
+      console.log(\`User \${user.id}: \${user.name}\`);
+    `
+    expect(runCode(code, 'typescript')).toContain('User 1: Bob')
   })
 
   it('should parse HTML and execute script tags', () => {
@@ -39,8 +49,14 @@ describe('evalSandbox', () => {
     expect(runCode(code, 'json')).toContain('[JSON Valid]')
   })
 
-  it('should execute basic Python print statements', () => {
-    const code = 'x = 100\nprint(x)'
-    expect(runCode(code, 'python')).toBe('100')
+  it('should execute complex Python function definitions and string formatting', () => {
+    const code = `
+def greet(name):
+    return f"Hello, {name}!"
+
+user_name = "Alice"
+print(greet(user_name))
+    `
+    expect(runCode(code, 'python')).toBe('Hello, Alice!')
   })
 })

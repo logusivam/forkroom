@@ -208,18 +208,18 @@ export function LandingPage() {
         </p>
 
         <div className="w-full max-w-md p-6 bg-surface-2 border border-border rounded-lg shadow-xl mb-6 text-left">
-          <form onSubmit={handleJoin} className="flex gap-2">
+          <form onSubmit={handleJoin} className="flex flex-col sm:flex-row gap-2">
             <input
               type="text"
               required
               placeholder="Enter room ID or paste link..."
               value={roomId}
               onChange={(e) => setRoomId(e.target.value)}
-              className="flex-1 bg-surface-3 border border-border rounded px-4 py-2 text-sm focus:outline-none focus:border-accent-green transition-colors"
+              className="flex-1 bg-surface-3 border border-border rounded px-4 py-2 text-sm focus:outline-none focus:border-accent-green transition-colors w-full"
             />
             <button
               type="submit"
-              className="bg-accent-blue hover:bg-opacity-90 text-white rounded px-5 py-2 text-sm font-bold transition-all cursor-pointer whitespace-nowrap"
+              className="bg-accent-blue hover:bg-opacity-90 text-white rounded px-5 py-2 text-sm font-bold transition-all cursor-pointer w-full sm:w-auto text-center"
             >
               Join Room &rarr;
             </button>

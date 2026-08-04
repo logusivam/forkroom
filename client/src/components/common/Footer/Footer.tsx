@@ -20,20 +20,20 @@ export function Footer() {
         </div>
 
         {/* Right Side (Links) */}
-        <div className="flex justify-center md:justify-end items-center space-x-6 text-xs font-semibold">
+        <div className="flex justify-center md:justify-end items-center space-x-4 sm:space-x-6 text-xs font-semibold">
           <a
             href="https://github.com/logusivam/forkroom"
             target="_blank"
             rel="noopener noreferrer"
-            className="text-accent-blue hover:underline"
+            className="text-accent-blue hover:underline whitespace-nowrap"
           >
-            GitHub &rarr;
+            GitHub
           </a>
-          <Link to="/terms" className="text-accent-blue hover:underline">
-            Terms of Service
+          <Link to="/terms" className="text-accent-blue hover:underline whitespace-nowrap">
+            Terms
           </Link>
-          <Link to="/privacy" className="text-accent-blue hover:underline">
-            Privacy Policy
+          <Link to="/privacy" className="text-accent-blue hover:underline whitespace-nowrap">
+            Privacy
           </Link>
         </div>
       </div>
