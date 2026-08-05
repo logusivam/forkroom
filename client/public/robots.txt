@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Allow: /terms
+Allow: /privacy
+Disallow: /room/
+Disallow: /room/*
+
+Sitemap: https://forkroom.dev/sitemap.xml

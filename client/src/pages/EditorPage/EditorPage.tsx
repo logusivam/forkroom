@@ -144,7 +144,9 @@ export function EditorPage() {
   return (
     <div className="flex flex-col h-screen bg-surface-1 text-text-primary overflow-hidden">
       <Helmet>
-        <title>Room: {roomId} — Forkroom</title>
+        <title>Coding Room {roomId} — Forkroom Collaborative Editor</title>
+        <meta name="description" content="Real-time collaborative coding session. Share the URL to invite collaborators. Live cursors, instant sync, run JavaScript output for all users." />
+        <meta name="robots" content="noindex" />
       </Helmet>
 
       {/* Header controls bar */}

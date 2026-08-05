@@ -107,6 +107,22 @@ export function LandingPage() {
     ]
   }
 
+  const softwareAppJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Forkroom",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "description": "Real-time collaborative code editor. No login. Share a URL and start coding together with live cursors and conflict-free CRDT sync.",
+    "url": "https://forkroom.dev",
+    "screenshot": "https://forkroom.dev/og-image.png"
+  }
+
   const faqItems = [
     {
       q: 'Is Forkroom free to use?',
@@ -190,7 +206,17 @@ export function LandingPage() {
         <meta name="description" content="Code together instantly. Share a room link, start editing in real-time with live cursors and conflict-free sync. No signup, no install. The Google Docs for code." />
         <link rel="canonical" href="https://forkroom.dev/" />
         <meta name="robots" content="index, follow" />
+        <meta property="og:title" content="Forkroom — Code Together Instantly" />
+        <meta property="og:description" content="Real-time collaborative code editor. Share a link, start coding. No login." />
+        <meta property="og:image" content="https://forkroom.dev/og-image.png" />
+        <meta property="og:url" content="https://forkroom.dev" />
+        <meta property="og:type" content="website" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Forkroom — Fork together. Ship faster." />
+        <meta name="twitter:description" content="Browser-based real-time collaborative code editor. No signup. Share a URL, start coding with live cursors." />
+        <meta name="twitter:image" content="https://forkroom.dev/og-image.png" />
         <script type="application/ld+json">{JSON.stringify(faqJsonLd)}</script>
+        <script type="application/ld+json">{JSON.stringify(softwareAppJsonLd)}</script>
       </Helmet>
 
       <Header />
