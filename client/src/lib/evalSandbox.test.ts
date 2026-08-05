@@ -39,6 +39,22 @@ describe('evalSandbox', () => {
     expect(runCode(code, 'typescript')).toContain('User 1: Bob')
   })
 
+  it('should transpile and execute TypeScript code containing switch statements and type keywords', () => {
+    const code = `
+      type ResponseStatus = "success" | "error" | "pending";
+      function handleResponse(status: ResponseStatus): string {
+        switch (status) {
+          case "success": return "✓ Data loaded successfully.";
+          case "error": return "✗ Error: Connection failed.";
+          case "pending": return "⏳ Loading, please wait...";
+        }
+      }
+      const currentStatus: ResponseStatus = "error";
+      console.log(handleResponse(currentStatus));
+    `
+    expect(runCode(code, 'typescript')).toBe('✗ Error: Connection failed.')
+  })
+
   it('should parse HTML and execute script tags', () => {
     const code = '<h1>Title</h1><script>console.log("hello HTML")</script>'
     expect(runCode(code, 'html')).toContain('hello HTML')

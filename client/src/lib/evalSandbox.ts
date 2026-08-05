@@ -108,7 +108,17 @@ export function runCode(code: string, language: string = 'javascript'): string {
         codeToRun = code
           .replace(/interface\s+\w+\s*\{[\s\S]*?\}/g, '')
           .replace(/type\s+\w+\s*=\s*[\s\S]*?;/g, '')
-          .replace(/:\s*[A-Z_a-z]\w*(\[\])?/g, '')
+          .replace(/("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(:\s*[A-Z_a-z]\w*(?:\[\])?)/g, (match, stringLiteral, typeAnnotation) => {
+            if (stringLiteral) {
+              return stringLiteral
+            }
+            const word = typeAnnotation.substring(1).trim()
+            const jsKeywords = ['return', 'break', 'continue', 'case', 'default', 'throw', 'if', 'else', 'for', 'while', 'do', 'switch']
+            if (jsKeywords.includes(word)) {
+              return match
+            }
+            return ''
+          })
           .replace(/<\w+>/g, '')
       }
       // eslint-disable-next-line no-eval

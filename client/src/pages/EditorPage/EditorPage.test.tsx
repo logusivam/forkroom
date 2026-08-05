@@ -9,6 +9,7 @@ let mockRoomId: string | undefined = undefined
 vi.mock('react-router', () => ({
   useParams: () => ({ roomId: mockRoomId }),
   useNavigate: () => mockNavigate,
+  Link: ({ to, children, ...props }: any) => <a href={to} {...props}>{children}</a>,
 }))
 
 describe('EditorPage', () => {
