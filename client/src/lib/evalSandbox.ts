@@ -62,6 +62,11 @@ function transpilePythonToJS(pyCode: string): string {
       return `_py_slice(${objName}, ${start}, ${stop}, ${step})`
     })
 
+    // Transpile simple Python list comprehensions [expr for var in iterable] -> (iterable).map(var => expr)
+    jsLine = jsLine.replace(/\[\s*([^\]]+?)\s+for\s+(\w+)\s+in\s+([^\]]+?)\s*\]/g, (_, expr, varName, iterable) => {
+      return `(${iterable}).map(${varName} => ${expr})`
+    })
+
     // If line ends with colon and isn't def, handle if/for/while
     if (trimmed.endsWith(':') && !trimmed.startsWith('def ')) {
       const match = trimmed.match(/^(if|for|while|elif|else)\b(.*):$/)
@@ -172,6 +177,26 @@ function min(iterable, key) {
 function sum(iterable) {
   return iterable.reduce((a, b) => a + b, 0);
 }
+function range(start, stop, step) {
+  let rStart = start;
+  let rStop = stop;
+  let rStep = step === undefined ? 1 : step;
+  if (stop === undefined) {
+    rStart = 0;
+    rStop = start;
+  }
+  const result = [];
+  if (rStep > 0) {
+    for (let i = rStart; i < rStop; i += rStep) {
+      result.push(i);
+    }
+  } else if (rStep < 0) {
+    for (let i = rStart; i > rStop; i += rStep) {
+      result.push(i);
+    }
+  }
+  return result;
+}
 `
 
   return helpers + '\n' + jsLines.join('\n')
@@ -209,6 +234,8 @@ export function runCode(code: string, language: string = 'javascript'): string {
             return ''
           })
           .replace(/<\w+>/g, '')
+          .replace(/\s+as\s+[A-Za-z]\w*(?:\[\])?/g, '')
+          .replace(/(\w+)!(\.\w+)/g, '$1$2')
       }
       // eslint-disable-next-line no-eval
       const result = eval(codeToRun)
