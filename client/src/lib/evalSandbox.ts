@@ -53,6 +53,15 @@ function transpilePythonToJS(pyCode: string): string {
     // Translate python keyword arguments like key=len to len
     jsLine = jsLine.replace(/\bkey\s*=\s*/g, '')
 
+    // Translate Python slice syntax obj[start:stop:step] -> _py_slice(obj, start, stop, step)
+    jsLine = jsLine.replace(/([a-zA-Z_]\w*(?:\([^)]*\))?)\s*\[\s*([^\]]*:[^\]]*)\s*\]/g, (_match, objName, sliceExpr) => {
+      const parts = sliceExpr.split(':')
+      const start = parts[0] && parts[0].trim() ? parts[0].trim() : 'null'
+      const stop = parts[1] && parts[1].trim() ? parts[1].trim() : 'null'
+      const step = parts[2] && parts[2].trim() ? parts[2].trim() : 'null'
+      return `_py_slice(${objName}, ${start}, ${stop}, ${step})`
+    })
+
     // If line ends with colon and isn't def, handle if/for/while
     if (trimmed.endsWith(':') && !trimmed.startsWith('def ')) {
       const match = trimmed.match(/^(if|for|while|elif|else)\b(.*):$/)
@@ -76,9 +85,11 @@ function transpilePythonToJS(pyCode: string): string {
     }
     // Translate variable assignment: x = value -> var x = value (to support strict mode)
     else {
-      const assignMatch = jsLine.match(/^([a-zA-Z_]\w*)\s*=\s*(.*)$/)
-      if (assignMatch) {
-        jsLine = `var ${assignMatch[1]} = ${assignMatch[2]}`
+      if (!trimmed.startsWith('return ')) {
+        const assignMatch = jsLine.match(/^([a-zA-Z_]\w*)\s*=\s*(.*)$/)
+        if (assignMatch) {
+          jsLine = `var ${assignMatch[1]} = ${assignMatch[2]}`
+        }
       }
     }
 
@@ -92,6 +103,37 @@ function transpilePythonToJS(pyCode: string): string {
   }
 
   const helpers = `
+function _py_slice(obj, start, stop, step) {
+  if (obj === null || obj === undefined) return obj;
+  const isString = typeof obj === 'string';
+  const arr = isString ? obj.split('') : Array.from(obj);
+  const s = step === null ? 1 : step;
+  
+  let startIdx = 0;
+  if (start !== null) {
+    startIdx = start < 0 ? arr.length + start : start;
+  } else if (s < 0) {
+    startIdx = arr.length - 1;
+  }
+  
+  let stopIdx = s < 0 ? -1 : arr.length;
+  if (stop !== null) {
+    stopIdx = stop < 0 ? arr.length + stop : stop;
+  }
+  
+  const result = [];
+  if (s > 0) {
+    for (let i = startIdx; i < stopIdx; i += s) {
+      if (i >= 0 && i < arr.length) result.push(arr[i]);
+    }
+  } else if (s < 0) {
+    for (let i = startIdx; i > stopIdx; i += s) {
+      if (i >= 0 && i < arr.length) result.push(arr[i]);
+    }
+  }
+  return isString ? result.join('') : result;
+}
+
 function len(x) {
   if (x === null || x === undefined) return 0;
   if (typeof x.length === 'number') return x.length;

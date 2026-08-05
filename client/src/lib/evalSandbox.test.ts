@@ -98,4 +98,18 @@ print(f"Character count: {len(longest_word)}")
     expect(output).toContain("The longest word is: 'Learning'")
     expect(output).toContain("Character count: 8")
   })
+
+  it('should execute Python code containing string slicing syntax', () => {
+    const code = `
+def reverse_string(text):
+    return text[::-1]
+
+message = "Python"
+print(f"Original: {message}")
+print(f"Reversed: {reverse_string(message)}")
+    `
+    const output = runCode(code, 'python')
+    expect(output).toContain("Original: Python")
+    expect(output).toContain("Reversed: nohtyP")
+  })
 })
