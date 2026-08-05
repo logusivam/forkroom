@@ -1,0 +1,17 @@
+<svg
+  width="240"
+  height="56"
+  viewBox="0 0 240 56"
+  fill="none"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <g transform="translate(16, 10)">
+    <circle cx="12" cy="19" r="3" fill="#4EC9B0" />
+    <path d="M12 16V10" stroke="#D4D4D4" strokeWidth="2" strokeLinecap="round" />
+    <path d="M12 12C9 12 7 10 7 7" stroke="#D4D4D4" strokeWidth="2" strokeLinecap="round" />
+    <path d="M12 12C15 12 17 10 17 7" stroke="#4EC9B0" strokeWidth="2" strokeLinecap="round" />
+    <circle cx="7" cy="6" r="2" fill="#D4D4D4" />
+    <circle cx="17" cy="6" r="2" fill="#4EC9B0" />
+  </g>
+  <text x="60" y="36" fill="#D4D4D4" font-family="system-ui, -apple-system, sans-serif" font-weight="bold" font-size="24" letter-spacing="1">FORKROOM</text>
+</svg>
