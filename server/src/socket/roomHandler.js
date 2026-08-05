@@ -47,8 +47,8 @@ export function registerRoomHandler(io, socket) {
     socket.to(roomId).emit('language-changed', { language })
   })
 
-  socket.on('run-code', ({ roomId, output, runBy }) => {
-    socket.to(roomId).emit('code-output', { output, runBy, timestamp: Date.now() })
+  socket.on('run-code', ({ roomId, output, runBy, latency }) => {
+    socket.to(roomId).emit('code-output', { output, runBy, latency, timestamp: Date.now() })
   })
 
   socket.on('disconnect', () => {

@@ -7,6 +7,7 @@ interface RunOutput {
   output: string
   runBy: string
   timestamp: number
+  latency?: number
 }
 
 export function useCodeRunner(
@@ -36,12 +37,16 @@ export function useCodeRunner(
     if (!ydoc) return
 
     const code = ydoc.getText('codetext').toString()
+    const startTime = performance.now()
     const result = runCode(code, language)
+    const endTime = performance.now()
+    const latency = Math.round(endTime - startTime)
 
     const runData: RunOutput = {
       output: result,
       runBy: name,
       timestamp: Date.now(),
+      latency,
     }
 
     setOutput(runData)
@@ -51,6 +56,7 @@ export function useCodeRunner(
         roomId,
         output: result,
         runBy: name,
+        latency,
       })
     }
   }

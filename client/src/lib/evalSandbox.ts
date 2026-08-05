@@ -47,6 +47,12 @@ function transpilePythonToJS(pyCode: string): string {
       return '`' + replaced + '`'
     })
 
+    // Translate split() to split(/\s+/)
+    jsLine = jsLine.replace(/\.split\s*\(\s*\)/g, ".split(/\\s+/)")
+
+    // Translate python keyword arguments like key=len to len
+    jsLine = jsLine.replace(/\bkey\s*=\s*/g, '')
+
     // If line ends with colon and isn't def, handle if/for/while
     if (trimmed.endsWith(':') && !trimmed.startsWith('def ')) {
       const match = trimmed.match(/^(if|for|while|elif|else)\b(.*):$/)
@@ -85,7 +91,48 @@ function transpilePythonToJS(pyCode: string): string {
     jsLines.push('}')
   }
 
-  return jsLines.join('\n')
+  const helpers = `
+function len(x) {
+  if (x === null || x === undefined) return 0;
+  if (typeof x.length === 'number') return x.length;
+  if (typeof x.size === 'number') return x.size;
+  if (typeof x === 'object') return Object.keys(x).length;
+  return 0;
+}
+function max(iterable, key) {
+  if (!iterable || iterable.length === 0) return null;
+  let maxVal = iterable[0];
+  let maxKeyVal = key ? key(maxVal) : maxVal;
+  for (let i = 1; i < iterable.length; i++) {
+    let item = iterable[i];
+    let itemKeyVal = key ? key(item) : item;
+    if (itemKeyVal > maxKeyVal) {
+      maxVal = item;
+      maxKeyVal = itemKeyVal;
+    }
+  }
+  return maxVal;
+}
+function min(iterable, key) {
+  if (!iterable || iterable.length === 0) return null;
+  let minVal = iterable[0];
+  let minKeyVal = key ? key(minVal) : minVal;
+  for (let i = 1; i < iterable.length; i++) {
+    let item = iterable[i];
+    let itemKeyVal = key ? key(item) : item;
+    if (itemKeyVal < minKeyVal) {
+      minVal = item;
+      minKeyVal = itemKeyVal;
+    }
+  }
+  return minVal;
+}
+function sum(iterable) {
+  return iterable.reduce((a, b) => a + b, 0);
+}
+`
+
+  return helpers + '\n' + jsLines.join('\n')
 }
 
 export function runCode(code: string, language: string = 'javascript'): string {

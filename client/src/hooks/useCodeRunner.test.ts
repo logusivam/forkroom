@@ -31,6 +31,7 @@ describe('useCodeRunner', () => {
       roomId: 'room123',
       output: 'runner works',
       runBy: 'UserA',
+      latency: expect.any(Number),
     })
   })
 

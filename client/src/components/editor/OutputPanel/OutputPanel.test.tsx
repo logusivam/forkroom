@@ -29,4 +29,25 @@ describe('OutputPanel', () => {
     render(<OutputPanel output={null} onClear={vi.fn()} />)
     expect(screen.getByText(/No output/i)).toBeDefined()
   })
+
+  it('should render copy button and copy to clipboard without prefixes', () => {
+    const mockWriteText = vi.fn().mockImplementation(() => Promise.resolve())
+    Object.assign(navigator, {
+      clipboard: {
+        writeText: mockWriteText,
+      },
+    })
+
+    const output = {
+      output: '[error] Sample Error\nNormal log',
+      runBy: 'UserA',
+      timestamp: Date.now(),
+    }
+
+    render(<OutputPanel output={output} onClear={vi.fn()} />)
+    const copyBtn = screen.getByRole('button', { name: /Copy/i })
+    expect(copyBtn).toBeDefined()
+    fireEvent.click(copyBtn)
+    expect(mockWriteText).toHaveBeenCalledWith('Sample Error\nNormal log')
+  })
 })

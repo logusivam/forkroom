@@ -85,4 +85,17 @@ for num in numbers:
     `
     expect(runCode(code, 'python')).toBe('Match found: 7\nMatch found: 9\nMatch found: 8')
   })
+
+  it('should execute Python code containing split, max, and len helpers', () => {
+    const code = `
+text = "Learning to code is an amazing journey"
+words = text.split()
+longest_word = max(words, key=len)
+print(f"The longest word is: '{longest_word}'")
+print(f"Character count: {len(longest_word)}")
+    `
+    const output = runCode(code, 'python')
+    expect(output).toContain("The longest word is: 'Learning'")
+    expect(output).toContain("Character count: 8")
+  })
 })
