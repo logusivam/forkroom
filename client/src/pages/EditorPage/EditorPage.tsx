@@ -47,7 +47,13 @@ export function EditorPage() {
   const { socket, users, toasts, setToasts } = useRoom(roomId || '', name, colour)
   const { provider, ydoc } = useYjs(roomId || '', name, colour, editor)
   const connectionStatus = useConnectionStatus(provider)
-  const { output, executeCode, clearOutput } = useCodeRunner(roomId || '', name, socket, ydoc, language)
+  const { output, executeCode, clearOutput } = useCodeRunner(
+    roomId || '',
+    name,
+    socket,
+    ydoc,
+    language
+  )
 
   // Listen to remote language updates
   useEffect(() => {
@@ -91,7 +97,10 @@ export function EditorPage() {
   const handleCopyLink = () => {
     navigator.clipboard.writeText(window.location.href)
     const toastId = Math.random().toString(36).substring(2, 9)
-    setToasts((prev) => [...prev, { id: toastId, message: 'Room link copied to clipboard!', type: 'join' }])
+    setToasts((prev) => [
+      ...prev,
+      { id: toastId, message: 'Room link copied to clipboard!', type: 'join' },
+    ])
   }
 
   const handleCopyRoomCode = () => {
@@ -101,7 +110,10 @@ export function EditorPage() {
     setTimeout(() => setCopied(false), 2000)
 
     const toastId = Math.random().toString(36).substring(2, 9)
-    setToasts((prev) => [...prev, { id: toastId, message: 'Room ID copied to clipboard!', type: 'join' }])
+    setToasts((prev) => [
+      ...prev,
+      { id: toastId, message: 'Room ID copied to clipboard!', type: 'join' },
+    ])
   }
 
   if (!roomId) return null
@@ -113,7 +125,10 @@ export function EditorPage() {
           <title>Join Room — Forkroom</title>
           <meta name="robots" content="noindex, nofollow" />
         </Helmet>
-        <form onSubmit={handleJoin} className="w-full max-w-sm p-6 bg-surface-2 border border-border rounded-lg shadow-lg">
+        <form
+          onSubmit={handleJoin}
+          className="w-full max-w-sm p-6 bg-surface-2 border border-border rounded-lg shadow-lg"
+        >
           <h2 className="text-xl font-bold mb-4 text-center">Join Room</h2>
           <label className="block text-xs font-semibold text-text-secondary uppercase mb-2">
             Your Display Name
@@ -145,7 +160,10 @@ export function EditorPage() {
     <div className="flex flex-col h-screen bg-surface-1 text-text-primary overflow-hidden">
       <Helmet>
         <title>Coding Room {roomId} — Forkroom Collaborative Editor</title>
-        <meta name="description" content="Real-time collaborative coding session. Share the URL to invite collaborators. Live cursors, instant sync, run JavaScript output for all users." />
+        <meta
+          name="description"
+          content="Real-time collaborative coding session. Share the URL to invite collaborators. Live cursors, instant sync, run JavaScript output for all users."
+        />
         <meta name="robots" content="noindex" />
       </Helmet>
 
@@ -154,29 +172,7 @@ export function EditorPage() {
         {/* Left Side: Brand, status, and avatars (Always visible) */}
         <div className="flex items-center space-x-4">
           <Link to="/" className="hover:opacity-90 transition-opacity" title="Back to Landing Page">
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-              className="inline-block"
-            >
-              {/* Fork base circle */}
-              <circle cx="12" cy="19" r="3" fill="#4EC9B0" />
-              {/* Fork stem */}
-              <path d="M12 16V10" stroke="#D4D4D4" strokeWidth="2" strokeLinecap="round" />
-              {/* Left branch bezier */}
-              <path d="M12 12C9 12 7 10 7 7" stroke="#D4D4D4" strokeWidth="2" strokeLinecap="round" />
-              {/* Right branch bezier */}
-              <path d="M12 12C15 12 17 10 17 7" stroke="#4EC9B0" strokeWidth="2" strokeLinecap="round" />
-              {/* Left top circle */}
-              <circle cx="7" cy="6" r="2" fill="#D4D4D4" />
-              {/* Right top circle */}
-              <circle cx="17" cy="6" r="2" fill="#4EC9B0" />
-              {/* Cursor blink */}
-              <rect x="16" y="9" width="2" height="6" fill="#4EC9B0" className="animate-pulse" />
-            </svg>
+            <img src="/favicon-96.png" alt="Forkroom Logo" className="w-6 h-6 object-contain" />
           </Link>
           <ConnectionStatusBar status={connectionStatus} />
           <UserAvatarList users={users} />
@@ -279,11 +275,7 @@ export function EditorPage() {
 
       <main className="flex-1 p-6 overflow-y-auto md:overflow-hidden flex flex-col md:flex-row gap-6">
         <div className="flex-[7] relative h-[55vh] md:h-full">
-          <MonacoPanel
-            provider={provider}
-            language={language}
-            onEditorMount={setEditor}
-          />
+          <MonacoPanel provider={provider} language={language} onEditorMount={setEditor} />
         </div>
         <div className="flex-[3] h-[30vh] md:h-full">
           <OutputPanel output={output} onClear={clearOutput} />
@@ -291,7 +283,10 @@ export function EditorPage() {
       </main>
 
       {/* Toast Alert overlay */}
-      <ToastProvider toasts={toasts} onDismiss={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))} />
+      <ToastProvider
+        toasts={toasts}
+        onDismiss={(id) => setToasts((prev) => prev.filter((t) => t.id !== id))}
+      />
     </div>
   )
 }

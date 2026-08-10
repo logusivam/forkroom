@@ -10,11 +10,9 @@
   },
   "lint-staged": {
     "client/src/**/*.{ts,tsx}": [
-      "eslint --fix",
       "prettier --write"
     ],
     "server/src/**/*.{js}": [
-      "eslint --fix",
       "prettier --write"
     ]
   }
