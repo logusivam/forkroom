@@ -36,6 +36,5 @@ out/
 .env.staging
 .env.test
 .agent
-doc
 implementation_plan.md
 err.md
