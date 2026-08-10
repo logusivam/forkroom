@@ -44,9 +44,115 @@
   <meta name="twitter:description" content="Browser-based real-time collaborative code editor. No signup. Share a URL, start coding with live cursors.">
   <meta name="twitter:image" content="https://forkroom.dev/og-image.png">
   <meta name="twitter:image:alt" content="Forkroom — real-time collaborative code editor">
+
+  <!-- ═══ PRELOADER STYLES ═══ -->
+  <style>
+    #forkroom-preloader {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background-color: #1E1E1E;
+      gap: 32px;
+      transition: opacity 0.4s ease, visibility 0.4s ease;
+    }
+
+    #forkroom-preloader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+
+    .preloader-logo {
+      width: 88px;
+      height: 88px;
+      border-radius: 20px;
+      animation: preloader-pulse 2.4s ease-in-out infinite;
+      box-shadow: 0 0 0 0 rgba(78, 201, 176, 0.5);
+    }
+
+    @keyframes preloader-pulse {
+      0%   { transform: scale(1);    box-shadow: 0 0 0  0px rgba(78, 201, 176, 0.45); }
+      50%  { transform: scale(1.07); box-shadow: 0 0 0 18px rgba(78, 201, 176, 0);    }
+      100% { transform: scale(1);    box-shadow: 0 0 0  0px rgba(78, 201, 176, 0);    }
+    }
+
+    .preloader-track {
+      width: 160px;
+      height: 2px;
+      background: #2D2D30;
+      border-radius: 99px;
+      overflow: hidden;
+    }
+
+    .preloader-bar {
+      height: 100%;
+      width: 40%;
+      background: linear-gradient(90deg, #4EC9B0, #569CD6);
+      border-radius: 99px;
+      animation: preloader-slide 1.4s ease-in-out infinite;
+    }
+
+    @keyframes preloader-slide {
+      0%   { transform: translateX(-100%); }
+      50%  { transform: translateX(150%);  }
+      100% { transform: translateX(-100%); }
+    }
+
+    .preloader-wordmark {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 23px;
+      font-weight: 500;
+      letter-spacing: 0.12em;
+      color: #9D9D9D;
+    }
+
+    .preloader-wordmark span {
+      color: #4EC9B0;
+    }
+  </style>
 </head>
 <body>
+  <!-- Preloader: visible before React mounts -->
+  <div id="forkroom-preloader" aria-label="Loading Forkroom…" role="status">
+    <img src="/logo-1024x1024.png" alt="Forkroom" class="preloader-logo" />
+    <div class="preloader-track">
+      <div class="preloader-bar"></div>
+    </div>
+    <p class="preloader-wordmark"><span>Fork</span>room</p>
+  </div>
+
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
+
+  <!-- Remove preloader once React has rendered -->
+  <script>
+    (function () {
+      function dismissPreloader() {
+        var el = document.getElementById('forkroom-preloader');
+        if (!el) return;
+        el.classList.add('fade-out');
+        setTimeout(function () { el.remove(); }, 450);
+      }
+
+      // Wait for the React root to have at least one child (app rendered)
+      var observer = new MutationObserver(function () {
+        var root = document.getElementById('root');
+        if (root && root.childElementCount > 0) {
+          observer.disconnect();
+          // Small delay so the first paint is complete before fading
+          setTimeout(dismissPreloader, 200);
+        }
+      });
+
+      observer.observe(document.body, { childList: true, subtree: true });
+
+      // Hard fallback: always remove after 6 s regardless
+      setTimeout(dismissPreloader, 6000);
+    })();
+  </script>
 </body>
 </html>
+
