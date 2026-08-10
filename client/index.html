@@ -47,6 +47,7 @@
 
   <!-- ═══ PRELOADER STYLES ═══ -->
   <style>
+    /* ── Overlay ── */
     #forkroom-preloader {
       position: fixed;
       inset: 0;
@@ -56,61 +57,115 @@
       align-items: center;
       justify-content: center;
       background-color: #1E1E1E;
-      gap: 32px;
-      transition: opacity 0.4s ease, visibility 0.4s ease;
+      gap: 28px;
+      transition: opacity 0.45s ease, visibility 0.45s ease;
     }
-
     #forkroom-preloader.fade-out {
       opacity: 0;
       visibility: hidden;
     }
 
+    /* ── Logo ── */
     .preloader-logo {
-      width: 88px;
-      height: 88px;
-      border-radius: 20px;
-      animation: preloader-pulse 2.4s ease-in-out infinite;
-      box-shadow: 0 0 0 0 rgba(78, 201, 176, 0.5);
+      width: 64px;
+      height: 64px;
+      border-radius: 14px;
     }
 
-    @keyframes preloader-pulse {
-      0%   { transform: scale(1);    box-shadow: 0 0 0  0px rgba(78, 201, 176, 0.45); }
-      50%  { transform: scale(1.07); box-shadow: 0 0 0 18px rgba(78, 201, 176, 0);    }
-      100% { transform: scale(1);    box-shadow: 0 0 0  0px rgba(78, 201, 176, 0);    }
-    }
-
-    .preloader-track {
-      width: 160px;
-      height: 2px;
-      background: #2D2D30;
-      border-radius: 99px;
+    /* ── Terminal window ── */
+    .terminal-loader {
+      width: 100%;
+      max-width: 400px;
+      background: #252526;
+      border: 1px solid #3E3E42;
+      border-radius: 10px;
       overflow: hidden;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.55), 0 0 0 1px #3E3E42;
     }
-
-    .preloader-bar {
-      height: 100%;
-      width: 40%;
-      background: linear-gradient(90deg, #4EC9B0, #569CD6);
-      border-radius: 99px;
-      animation: preloader-slide 1.4s ease-in-out infinite;
+    .terminal-header {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #2D2D30;
+      padding: 8px 10px;
+      border-bottom: 1px solid #3E3E42;
     }
-
-    @keyframes preloader-slide {
-      0%   { transform: translateX(-100%); }
-      50%  { transform: translateX(150%);  }
-      100% { transform: translateX(-100%); }
+    .terminal-controls {
+      position: absolute;
+      left: 12px;
+      display: flex;
+      gap: 6px;
     }
+    .control {
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: #3E3E42;
+    }
+    .control.close    { background: #e33; }
+    .control.minimize { background: #CE9178; }
+    .control.maximize { background: #4EC9B0; }
 
-    .preloader-wordmark {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 23px;
-      font-weight: 500;
-      letter-spacing: 0.12em;
+    .terminal-title {
+      font-family: 'Inter', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
       color: #9D9D9D;
     }
 
-    .preloader-wordmark span {
+    /* ── Terminal body ── */
+    .terminal-body {
+      padding: 18px 16px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .terminal-prompt {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      color: #9D9D9D;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .terminal-prompt .prompt-char {
       color: #4EC9B0;
+      font-weight: 700;
+    }
+    .terminal-prompt .prompt-path {
+      color: #569CD6;
+    }
+    .terminal-text {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 13px;
+      font-weight: 600;
+      color: #4EC9B0;
+      display: inline-block;
+      white-space: nowrap;
+      overflow: hidden;
+      border-right: 2px solid #4EC9B0;
+      animation:
+        forkroom-type   4s steps(26) infinite,
+        forkroom-blink  0.5s step-end infinite alternate;
+    }
+    .terminal-hint {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      color: #3E3E42;
+      margin-top: 4px;
+    }
+    .terminal-hint span { color: #569CD6; }
+
+    /* ── Animations ── */
+    @keyframes forkroom-blink {
+      50% { border-right-color: transparent; }
+    }
+    @keyframes forkroom-type {
+      0%,  8%  { width: 0; }
+      40%, 60% { width: 26ch; }
+      92%, 100%{ width: 0; }
     }
   </style>
 </head>
@@ -118,41 +173,67 @@
   <!-- Preloader: visible before React mounts -->
   <div id="forkroom-preloader" aria-label="Loading Forkroom…" role="status">
     <img src="/logo-1024x1024.png" alt="Forkroom" class="preloader-logo" />
-    <div class="preloader-track">
-      <div class="preloader-bar"></div>
+    <div class="terminal-loader">
+      <div class="terminal-header">
+        <div class="terminal-controls">
+          <div class="control close"></div>
+          <div class="control minimize"></div>
+          <div class="control maximize"></div>
+        </div>
+        <div class="terminal-title">forkroom — bash</div>
+      </div>
+      <div class="terminal-body">
+        <div class="terminal-prompt">
+          <span class="prompt-char">❯</span>
+          <span class="prompt-path">~/forkroom</span>
+        </div>
+        <div class="terminal-text">Initialising room session…</div>
+        <div class="terminal-hint">
+          press <span>Ctrl+Enter</span> to run code anytime
+        </div>
+      </div>
     </div>
-    <p class="preloader-wordmark"><span>Fork</span>room</p>
   </div>
 
   <div id="root"></div>
   <script type="module" src="/src/main.tsx"></script>
 
-  <!-- Remove preloader once React has rendered -->
+  <!-- Remove preloader once React has rendered AND animation has had time to play -->
   <script>
     (function () {
+      // Record the time the page started loading
+      var startTime = Date.now();
+      // Minimum time the preloader must be visible (ms)
+      // forkroom-type animation: text fully typed at ~40% of 4000ms = 1600ms
+      // Keep it visible until the first full type+delete cycle (~4000ms)
+      var MIN_DURATION = 3800;
+
       function dismissPreloader() {
         var el = document.getElementById('forkroom-preloader');
         if (!el) return;
         el.classList.add('fade-out');
-        setTimeout(function () { el.remove(); }, 450);
+        setTimeout(function () { el.remove(); }, 500);
       }
 
-      // Wait for the React root to have at least one child (app rendered)
+      function scheduleDismiss() {
+        var elapsed = Date.now() - startTime;
+        var remaining = Math.max(0, MIN_DURATION - elapsed);
+        setTimeout(dismissPreloader, remaining);
+      }
+
+      // Watch for React to mount its first child
       var observer = new MutationObserver(function () {
         var root = document.getElementById('root');
         if (root && root.childElementCount > 0) {
           observer.disconnect();
-          // Small delay so the first paint is complete before fading
-          setTimeout(dismissPreloader, 200);
+          scheduleDismiss();
         }
       });
-
       observer.observe(document.body, { childList: true, subtree: true });
 
-      // Hard fallback: always remove after 6 s regardless
-      setTimeout(dismissPreloader, 6000);
+      // Hard fallback — always remove after 8 s regardless
+      setTimeout(dismissPreloader, 8000);
     })();
   </script>
 </body>
 </html>
-
