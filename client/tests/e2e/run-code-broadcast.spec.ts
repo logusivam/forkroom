@@ -6,6 +6,12 @@ test('collaborators see run code outputs broadcasted in real-time', async ({ bro
 
   const contextA = await browser.newContext();
   const pageA = await contextA.newPage();
+  pageA.on('pageerror', (err) => {
+    console.error('PageA Error:', err.message);
+  });
+  pageA.on('console', (msg) => {
+    console.log('PageA Console:', msg.text());
+  });
   await pageA.goto(url);
   await pageA.fill('input[placeholder="e.g. Loganathan"]', 'UserA');
   await pageA.click('button:has-text("Enter Room")');
