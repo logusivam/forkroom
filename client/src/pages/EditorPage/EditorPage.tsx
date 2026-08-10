@@ -172,7 +172,11 @@ export function EditorPage() {
         {/* Left Side: Brand, status, and avatars (Always visible) */}
         <div className="flex items-center space-x-4">
           <Link to="/" className="hover:opacity-90 transition-opacity" title="Back to Landing Page">
-            <img src="/favicon-96.png" alt="Forkroom Logo" className="w-6 h-6 object-contain" />
+            <img
+              src="/editor-nav-favicon-96.png"
+              alt="Forkroom Logo"
+              className="w-6 h-6 object-contain"
+            />
           </Link>
           <ConnectionStatusBar status={connectionStatus} />
           <UserAvatarList users={users} />
