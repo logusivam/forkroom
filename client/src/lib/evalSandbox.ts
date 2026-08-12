@@ -3,7 +3,7 @@ function transpilePythonToJS(pyCode: string): string {
   const jsLines: string[] = []
   const indentStack: number[] = []
 
-  for (let line of lines) {
+  for (const line of lines) {
     const trimmed = line.trim()
     if (!trimmed) {
       jsLines.push('')
@@ -48,24 +48,30 @@ function transpilePythonToJS(pyCode: string): string {
     })
 
     // Translate split() to split(/\s+/)
-    jsLine = jsLine.replace(/\.split\s*\(\s*\)/g, ".split(/\\s+/)")
+    jsLine = jsLine.replace(/\.split\s*\(\s*\)/g, '.split(/\\s+/)')
 
     // Translate python keyword arguments like key=len to len
     jsLine = jsLine.replace(/\bkey\s*=\s*/g, '')
 
     // Translate Python slice syntax obj[start:stop:step] -> _py_slice(obj, start, stop, step)
-    jsLine = jsLine.replace(/([a-zA-Z_]\w*(?:\([^)]*\))?)\s*\[\s*([^\]]*:[^\]]*)\s*\]/g, (_match, objName, sliceExpr) => {
-      const parts = sliceExpr.split(':')
-      const start = parts[0] && parts[0].trim() ? parts[0].trim() : 'null'
-      const stop = parts[1] && parts[1].trim() ? parts[1].trim() : 'null'
-      const step = parts[2] && parts[2].trim() ? parts[2].trim() : 'null'
-      return `_py_slice(${objName}, ${start}, ${stop}, ${step})`
-    })
+    jsLine = jsLine.replace(
+      /([a-zA-Z_]\w*(?:\([^)]*\))?)\s*\[\s*([^\]]*:[^\]]*)\s*\]/g,
+      (_match, objName, sliceExpr) => {
+        const parts = sliceExpr.split(':')
+        const start = parts[0] && parts[0].trim() ? parts[0].trim() : 'null'
+        const stop = parts[1] && parts[1].trim() ? parts[1].trim() : 'null'
+        const step = parts[2] && parts[2].trim() ? parts[2].trim() : 'null'
+        return `_py_slice(${objName}, ${start}, ${stop}, ${step})`
+      }
+    )
 
     // Transpile simple Python list comprehensions [expr for var in iterable] -> (iterable).map(var => expr)
-    jsLine = jsLine.replace(/\[\s*([^\]]+?)\s+for\s+(\w+)\s+in\s+([^\]]+?)\s*\]/g, (_, expr, varName, iterable) => {
-      return `(${iterable}).map(${varName} => ${expr})`
-    })
+    jsLine = jsLine.replace(
+      /\[\s*([^\]]+?)\s+for\s+(\w+)\s+in\s+([^\]]+?)\s*\]/g,
+      (_, expr, varName, iterable) => {
+        return `(${iterable}).map(${varName} => ${expr})`
+      }
+    )
 
     // If line ends with colon and isn't def, handle if/for/while
     if (trimmed.endsWith(':') && !trimmed.startsWith('def ')) {
@@ -222,17 +228,33 @@ export function runCode(code: string, language: string = 'javascript'): string {
         codeToRun = code
           .replace(/interface\s+\w+\s*\{[\s\S]*?\}/g, '')
           .replace(/type\s+\w+\s*=\s*[\s\S]*?;/g, '')
-          .replace(/("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(:\s*[A-Z_a-z]\w*(?:\[\])?)/g, (match, stringLiteral, typeAnnotation) => {
-            if (stringLiteral) {
-              return stringLiteral
+          .replace(
+            /("(?:\\.|[^"\\])*"|'(?:\\.|[^'\\])*'|`(?:\\.|[^`\\])*`)|(:\s*[A-Z_a-z]\w*(?:\[\])?)/g,
+            (match, stringLiteral, typeAnnotation) => {
+              if (stringLiteral) {
+                return stringLiteral
+              }
+              const word = typeAnnotation.substring(1).trim()
+              const jsKeywords = [
+                'return',
+                'break',
+                'continue',
+                'case',
+                'default',
+                'throw',
+                'if',
+                'else',
+                'for',
+                'while',
+                'do',
+                'switch',
+              ]
+              if (jsKeywords.includes(word)) {
+                return match
+              }
+              return ''
             }
-            const word = typeAnnotation.substring(1).trim()
-            const jsKeywords = ['return', 'break', 'continue', 'case', 'default', 'throw', 'if', 'else', 'for', 'while', 'do', 'switch']
-            if (jsKeywords.includes(word)) {
-              return match
-            }
-            return ''
-          })
+          )
           .replace(/<\w+>/g, '')
           .replace(/\s+as\s+[A-Za-z]\w*(?:\[\])?/g, '')
           .replace(/(\w+)!(\.\w+)/g, '$1$2')
@@ -253,7 +275,10 @@ export function runCode(code: string, language: string = 'javascript'): string {
         eval(jsCode)
         scriptExecuted = true
       }
-      const textOnly = code.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim()
+      const textOnly = code
+        .replace(/<[^>]*>/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
       logs.push(`[HTML Render Success]`)
       if (textOnly) {
         logs.push(`Text Content: "${textOnly}"`)
