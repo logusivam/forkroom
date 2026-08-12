@@ -255,9 +255,15 @@ export function runCode(code: string, language: string = 'javascript'): string {
               return ''
             }
           )
-          .replace(/<\w+>/g, '')
           .replace(/\s+as\s+[A-Za-z]\w*(?:\[\])?/g, '')
           .replace(/(\w+)!(\.\w+)/g, '$1$2')
+
+        // Remove generic-like angle bracket segments repeatedly to avoid incomplete multi-character sanitization.
+        let previousCodeToRun: string
+        do {
+          previousCodeToRun = codeToRun
+          codeToRun = codeToRun.replace(/<\w+>/g, '')
+        } while (codeToRun !== previousCodeToRun)
       }
       // eslint-disable-next-line no-eval
       const result = eval(codeToRun)
