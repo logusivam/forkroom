@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@import "./tokens.css";
+
+@theme {
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-surface-3: var(--surface-3);
+  --color-border: var(--border);
+  --color-text-primary: var(--text-primary);
+  --color-text-secondary: var(--text-secondary);
+  --color-accent-green: var(--accent-green);
+  --color-accent-blue: var(--accent-blue);
+  --color-accent-amber: var(--accent-amber);
+  --color-accent-red: var(--accent-red);
+}
+
+@layer base {
+  html, body {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+  body {
+    background-color: var(--surface-1);
+    color: var(--text-primary);
+    font-family: 'Inter', sans-serif;
+  }
+}

@@ -1,0 +1,69 @@
+import { useEffect, useState } from 'react'
+import { Socket } from 'socket.io-client'
+import { runCode } from '../lib/evalSandbox'
+import { SOCKET_EVENTS } from '../constants/socket-events'
+
+interface RunOutput {
+  output: string
+  runBy: string
+  timestamp: number
+  latency?: number
+}
+
+export function useCodeRunner(
+  roomId: string,
+  name: string,
+  socket: Socket | null,
+  ydoc: any,
+  language: string
+) {
+  const [output, setOutput] = useState<RunOutput | null>(null)
+
+  useEffect(() => {
+    if (!socket) return
+
+    const handleCodeOutput = (data: RunOutput) => {
+      setOutput(data)
+    }
+
+    socket.on(SOCKET_EVENTS.CODE_OUTPUT, handleCodeOutput)
+
+    return () => {
+      socket.off(SOCKET_EVENTS.CODE_OUTPUT, handleCodeOutput)
+    }
+  }, [socket])
+
+  const executeCode = () => {
+    if (!ydoc) return
+
+    const code = ydoc.getText('codetext').toString()
+    const startTime = performance.now()
+    const result = runCode(code, language)
+    const endTime = performance.now()
+    const latency = Math.round(endTime - startTime)
+
+    const runData: RunOutput = {
+      output: result,
+      runBy: name,
+      timestamp: Date.now(),
+      latency,
+    }
+
+    setOutput(runData)
+
+    if (socket) {
+      socket.emit(SOCKET_EVENTS.RUN_CODE, {
+        roomId,
+        output: result,
+        runBy: name,
+        latency,
+      })
+    }
+  }
+
+  const clearOutput = () => {
+    setOutput(null)
+  }
+
+  return { output, executeCode, clearOutput }
+}
