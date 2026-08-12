@@ -266,7 +266,7 @@ export function runCode(code: string, language: string = 'javascript'): string {
       }
     } else if (lang === 'html') {
       // Find and evaluate javascript code within script tags in HTML
-      const scriptRegex = /<script[^>]*>([\s\S]*?)<\/script>/gi
+      const scriptRegex = /<script\b[^>]*>([\s\S]*?)<\/script(?:\s+[^>]*)?\s*>/gi
       let match
       let scriptExecuted = false
       while ((match = scriptRegex.exec(code)) !== null) {
