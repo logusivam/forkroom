@@ -3,11 +3,30 @@ name: Deploy Client
 on:
   push:
     branches: [ main ]
+    paths:
+      - 'client/**'
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
-    - name: Deploy static build to Vercel
-      run: echo "Deploys client workspace to Vercel"
+
+    - name: Use Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci
+
+    - name: Run client tests
+      run: npm run test --workspace=client -- --run
+
+    - name: Build client
+      run: npm run build --workspace=client
+
+    - name: Trigger Vercel Deploy Hook
+      run: |
+        curl -X POST "${{ secrets.VERCEL_DEPLOY_HOOK_URL }}"
