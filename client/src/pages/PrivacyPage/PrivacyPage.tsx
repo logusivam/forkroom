@@ -27,16 +27,21 @@ export function PrivacyPage() {
             <p>Forkroom collects minimal data to operate the Service:</p>
             <ul className="list-disc pl-5 mt-2 space-y-1.5">
               <li>
-                <strong>Display name</strong>: entered by you before joining a room. Stored in server memory only for the duration of your session. Deleted when you disconnect.
+                <strong>Display name</strong>: entered by you before joining a room. Stored in
+                server memory only for the duration of your session. Deleted when you disconnect.
               </li>
               <li>
-                <strong>Room content</strong>: code typed in the editor. Stored in server memory only. Permanently deleted when all users leave the room.
+                <strong>Room content</strong>: code typed in the editor. Stored in server memory
+                only. Permanently deleted when all users leave the room.
               </li>
               <li>
-                <strong>Error data</strong>: anonymised stack traces and error events collected via Sentry for debugging purposes. No personally identifiable information (PII) is included.
+                <strong>Error data</strong>: anonymised stack traces and error events collected via
+                Sentry for debugging purposes. No personally identifiable information (PII) is
+                included.
               </li>
               <li>
-                <strong>Page view analytics</strong>: aggregated, anonymous page view counts collected via Vercel Analytics. No user identification, no cross-site tracking.
+                <strong>Page view analytics</strong>: aggregated, anonymous page view counts
+                collected via Vercel Analytics. No user identification, no cross-site tracking.
               </li>
             </ul>
           </section>
@@ -44,7 +49,10 @@ export function PrivacyPage() {
           <section>
             <h2 className="text-lg font-bold text-text-primary mb-3">2. What We Do NOT Collect</h2>
             <ul className="list-disc pl-5 space-y-1.5">
-              <li>We do not collect your name, email address, phone number, or any other personal identifier</li>
+              <li>
+                We do not collect your name, email address, phone number, or any other personal
+                identifier
+              </li>
               <li>We do not require account registration</li>
               <li>We do not use advertising cookies or third-party tracking pixels</li>
               <li>We do not sell, share, or rent data to any third party</li>
@@ -52,37 +60,48 @@ export function PrivacyPage() {
           </section>
 
           <section>
-            <h2 className="text-lg font-bold text-text-primary mb-3">3. Room Data & Ephemeral Storage</h2>
+            <h2 className="text-lg font-bold text-text-primary mb-3">
+              3. Room Data & Ephemeral Storage
+            </h2>
             <p>
-              All code and output in a Forkroom session is held in RAM (server memory) only. It is never written to a database or permanent storage. It is irreversibly deleted when the last user disconnects. Forkroom is not a storage or backup service.
+              All code and output in a Forkroom session is held in RAM (server memory) only. It is
+              never written to a database or permanent storage. It is irreversibly deleted when the
+              last user disconnects. Forkroom is not a storage or backup service.
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-bold text-text-primary mb-3">4. Display Names</h2>
             <p>
-              Your display name is visible to other users in the same room only. It is not stored beyond your session and is not associated with any persistent identifier.
+              Your display name is visible to other users in the same room only. It is not stored
+              beyond your session and is not associated with any persistent identifier.
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-bold text-text-primary mb-3">5. Analytics</h2>
             <p>
-              Forkroom uses Vercel Analytics (privacy-preserving, cookieless) to collect anonymous page view counts on the landing page. No user-level data, no IP address logging, no fingerprinting.
+              Forkroom uses Vercel Analytics (privacy-preserving, cookieless) to collect anonymous
+              page view counts on the landing page. No user-level data, no IP address logging, no
+              fingerprinting.
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-bold text-text-primary mb-3">6. Error Tracking</h2>
             <p>
-              Forkroom uses Sentry for error monitoring. Sentry captures anonymised error stack traces to help us fix bugs. No code content, display names, or room data is included in error reports.
+              Forkroom uses Sentry for error monitoring. Sentry captures anonymised error stack
+              traces to help us fix bugs. No code content, display names, or room data is included
+              in error reports.
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-bold text-text-primary mb-3">7. No Tracking Cookies</h2>
             <p>
-              Forkroom does not set tracking, advertising, or analytics cookies. A functional session identifier may be used by Socket.io for WebSocket connection management — this is a technical necessity and is not used for tracking.
+              Forkroom does not set tracking, advertising, or analytics cookies. A functional
+              session identifier may be used by Socket.io for WebSocket connection management — this
+              is a technical necessity and is not used for tracking.
             </p>
           </section>
 
@@ -94,13 +113,14 @@ export function PrivacyPage() {
                 <strong>Vercel</strong> (frontend hosting) — see Vercel Privacy Policy
               </li>
               <li>
-                <strong>Railway</strong> (backend hosting) — see Railway Privacy Policy
+                <strong>Render</strong> (backend hosting) — see Render Privacy Policy
               </li>
               <li>
                 <strong>Sentry</strong> (error tracking, anonymised) — see Sentry Privacy Policy
               </li>
               <li>
-                <strong>Google Fonts</strong> (Inter + JetBrains Mono typefaces) — fonts are loaded from Google's CDN
+                <strong>Google Fonts</strong> (Inter + JetBrains Mono typefaces) — fonts are loaded
+                from Google's CDN
               </li>
             </ul>
           </section>
@@ -108,14 +128,17 @@ export function PrivacyPage() {
           <section>
             <h2 className="text-lg font-bold text-text-primary mb-3">9. Children's Privacy</h2>
             <p>
-              Forkroom is not directed at children under 13. We do not knowingly collect data from children under 13. If you believe a child has used the Service, no personal data has been retained.
+              Forkroom is not directed at children under 13. We do not knowingly collect data from
+              children under 13. If you believe a child has used the Service, no personal data has
+              been retained.
             </p>
           </section>
 
           <section>
             <h2 className="text-lg font-bold text-text-primary mb-3">10. Changes to This Policy</h2>
             <p>
-              We may update this Privacy Policy at any time. The "Last updated" date reflects the most recent revision. Continued use of the Service constitutes acceptance.
+              We may update this Privacy Policy at any time. The "Last updated" date reflects the
+              most recent revision. Continued use of the Service constitutes acceptance.
             </p>
           </section>
 

@@ -275,7 +275,12 @@ export function EditorPage() {
 
       <main className="flex-1 p-6 overflow-y-auto md:overflow-hidden flex flex-col md:flex-row gap-6">
         <div className="flex-[7] relative h-[55vh] md:h-full">
-          <MonacoPanel provider={provider} language={language} onEditorMount={setEditor} />
+          <MonacoPanel
+            provider={provider}
+            language={language}
+            onEditorMount={setEditor}
+            onRunCode={executeCode}
+          />
         </div>
         <div className="flex-[3] h-[30vh] md:h-full">
           <OutputPanel output={output} onClear={clearOutput} />

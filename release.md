@@ -7,7 +7,8 @@ Forkroom follows [Semantic Versioning (SemVer)](https://semver.org/):
 - **PATCH**: Backward-compatible bug fixes.
 
 ## Release Process
-1. **Validation**: Ensure all unit, integration, and E2E tests are passing.
-2. **Changelog**: Append version details into `CHANGELOG.md`.
-3. **Tagging**: Create git tag matching `v*.*.*` and push to main.
-4. **Automation**: GitHub actions triggers the release workflow, building static assets.
+1. **Automation**: Upon push or merge to the `main` branch, the `Release` workflow automatically executes.
+2. **Version Bump**: The workflow runs `standard-version` which analyzes the Conventional Commits since the last release to determine the next SemVer version.
+3. **Changelog**: `CHANGELOG.md` is automatically updated with the list of changes (features, bug fixes, chore, etc.).
+4. **Git Updates**: The bumped version in `package.json` and the updated `CHANGELOG.md` are committed and pushed back to the `main` branch with the new version tag.
+5. **GitHub Release**: A GitHub Release matching the tag is published automatically.

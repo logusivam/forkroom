@@ -9,6 +9,9 @@ export default defineConfig({
     globals: true,
     setupFiles: './vitest-setup.ts',
     exclude: ['**/node_modules/**', '**/dist/**', '**/tests/e2e/**'],
+    forks: {
+      maxForks: 1,
+    },
   },
   resolve: {
     alias: {

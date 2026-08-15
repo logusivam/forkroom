@@ -9,9 +9,10 @@ interface MonacoPanelProps {
   provider: WebsocketProvider | null
   language: string
   onEditorMount?: (editor: monaco.editor.IStandaloneCodeEditor) => void
+  onRunCode?: () => void
 }
 
-export function MonacoPanel({ provider, language, onEditorMount }: MonacoPanelProps) {
+export function MonacoPanel({ provider, language, onEditorMount, onRunCode }: MonacoPanelProps) {
   const [editor, setEditor] = useState<monaco.editor.IStandaloneCodeEditor | null>(null)
   const awarenessStates = useAwareness(provider)
 
@@ -37,11 +38,23 @@ export function MonacoPanel({ provider, language, onEditorMount }: MonacoPanelPr
     const disposable = editor.onDidChangeCursorSelection(updateAwarenessCursor)
     const interval = setInterval(updateAwarenessCursor, 1000)
 
+    // Add Ctrl+Enter shortcut listener to run code
+    const keyDisposable = editor.onKeyDown((e) => {
+      if (e.ctrlKey && e.keyCode === monaco.KeyCode.Enter) {
+        e.preventDefault()
+        e.stopPropagation()
+        if (onRunCode) {
+          onRunCode()
+        }
+      }
+    })
+
     return () => {
       disposable.dispose()
+      keyDisposable.dispose()
       clearInterval(interval)
     }
-  }, [editor, provider])
+  }, [editor, provider, onRunCode])
 
   const handleEditorDidMount = (editorInstance: monaco.editor.IStandaloneCodeEditor) => {
     setEditor(editorInstance)
