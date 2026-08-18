@@ -2,46 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
-### [0.1.19](https://github.com/logusivam/forkroom/compare/v0.1.18...v0.1.19) (2026-08-18)
-
-### [0.1.18](https://github.com/logusivam/forkroom/compare/v0.1.17...v0.1.18) (2026-08-18)
-
-### [0.1.17](https://github.com/logusivam/forkroom/compare/v0.1.16...v0.1.17) (2026-08-18)
-
-### [0.1.16](https://github.com/logusivam/forkroom/compare/v0.1.15...v0.1.16) (2026-08-18)
-
-### [0.1.15](https://github.com/logusivam/forkroom/compare/v0.1.14...v0.1.15) (2026-08-18)
-
-### [0.1.14](https://github.com/logusivam/forkroom/compare/v0.1.13...v0.1.14) (2026-08-18)
-
-### [0.1.13](https://github.com/logusivam/forkroom/compare/v0.1.12...v0.1.13) (2026-08-18)
-
-### [0.1.12](https://github.com/logusivam/forkroom/compare/v0.1.11...v0.1.12) (2026-08-18)
-
-### [0.1.11](https://github.com/logusivam/forkroom/compare/v0.1.10...v0.1.11) (2026-08-18)
-
-### [0.1.10](https://github.com/logusivam/forkroom/compare/v0.1.9...v0.1.10) (2026-08-18)
-
-### [0.1.9](https://github.com/logusivam/forkroom/compare/v0.1.8...v0.1.9) (2026-08-18)
-
-### [0.1.8](https://github.com/logusivam/forkroom/compare/v0.1.7...v0.1.8) (2026-08-18)
-
-### [0.1.7](https://github.com/logusivam/forkroom/compare/v0.1.6...v0.1.7) (2026-08-18)
-
-### [0.1.6](https://github.com/logusivam/forkroom/compare/v0.1.5...v0.1.6) (2026-08-18)
-
-### [0.1.5](https://github.com/logusivam/forkroom/compare/v0.1.4...v0.1.5) (2026-08-18)
-
-### [0.1.4](https://github.com/logusivam/forkroom/compare/v0.1.3...v0.1.4) (2026-08-18)
-
-### [0.1.3](https://github.com/logusivam/forkroom/compare/v0.1.2...v0.1.3) (2026-08-18)
-
-### [0.1.2](https://github.com/logusivam/forkroom/compare/v0.1.1...v0.1.2) (2026-08-18)
+### [0.1.19](https://github.com/logusivam/forkroom/compare/v0.1.1...v0.1.19) (2026-08-18)
 
 
 ### Bug Fixes
 
 * run husky prepare step conditionally to prevent vercel and render build failures ([#3](https://github.com/logusivam/forkroom/issues/3)) ([405dd2a](https://github.com/logusivam/forkroom/commit/405dd2a6d44c3233faa653e3a496ee92505f85fb))
+* fix release loop by adding skip ci to standard-version commits and config stale workflow permissions ([0e07504](https://github.com/logusivam/forkroom/commit/0e07504728a054955b6961ef44b72291cd5cfa6f))
 
 ### 0.1.1 (2026-08-15)
 
@@ -74,7 +41,8 @@ All notable changes to this project will be documented in this file. See [standa
 * initialize monorepo structure with client, server, and configuration files ([d9003cf](https://github.com/logusivam/forkroom/commit/d9003cfd991927d360a0cf40dd937e0fdc56e290))
 * initialize project structure with Yjs-Monaco editor bindings and Vitest setup ([da6a9b0](https://github.com/logusivam/forkroom/commit/da6a9b02d84d5b4422d20e060f69739eecba6e1d))
 
-## [1.0.0] - 2026-08-05
+### 0.1.0 (2026-08-05)
+
 ### Added
 - Core real-time collaborative text editor using Yjs and Monaco Editor.
 - Built-in multi-language simulation runner (TypeScript, JavaScript, Python, HTML, CSS, JSON).
