@@ -1,6 +1,16 @@
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.1.2](https://github.com/logusivam/forkroom/compare/v0.1.1...v0.1.2) (2026-08-18)
+
+
+### Bug Fixes
+
+* **release:** resolve release loop using [skip ci] and clarify stale permissions ([#5](https://github.com/logusivam/forkroom/issues/5)) ([a87bcec](https://github.com/logusivam/forkroom/commit/a87bcec243ae836cb19703e41338c701c2be154e))
+* **release:** resolve release loop using [skip ci] and clarify stale permissions ([#6](https://github.com/logusivam/forkroom/issues/6)) ([a434edb](https://github.com/logusivam/forkroom/commit/a434edb4c275b6a55aa4a07ea2fa30b497c39d59))
+* run husky prepare step conditionally to prevent vercel and render build failures ([#3](https://github.com/logusivam/forkroom/issues/3)) ([405dd2a](https://github.com/logusivam/forkroom/commit/405dd2a6d44c3233faa653e3a496ee92505f85fb))
+
 ### 0.1.1 (2026-08-15)
 
 
