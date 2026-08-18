@@ -34,7 +34,7 @@ jobs:
       - name: Run standard-version
         id: versioning
         run: |
-          standard-version --commit-all
+          standard-version --commit-all --releaseCommitMessageFormat="chore(release): %s [skip ci]"
           echo "tag=$(git describe --tags --abbrev=0)" >> $GITHUB_OUTPUT
 
       - name: Push changes and tags
