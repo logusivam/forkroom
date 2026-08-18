@@ -17,7 +17,7 @@
 8. [Application Workflow Diagram](#8-application-workflow-diagram)
 9. [Database / State — Collections & Data Flow](#9-database--state--collections--data-flow)
 10. [Setup Guide](#10-setup-guide)
-11. [Chat & Reference Links](#11-chat--reference-links)
+11. [Reference Links](#11-reference-links)
 12. [Colour Codes & Font Families](#12-colour-codes--font-families)
 13. [Logo Design — Reasoning](#13-logo-design--reasoning)
 
@@ -1124,7 +1124,7 @@ cd client && npm run build
 
 ---
 
-## 11. Chat & Reference Links
+## 11. Reference Links
 
 ### Project Repository
 
