@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.2](https://github.com/logusivam/forkroom/compare/v0.1.1...v0.1.2) (2026-08-18)
+
+
+### Bug Fixes
+
+* run husky prepare step conditionally to prevent vercel and render build failures ([#3](https://github.com/logusivam/forkroom/issues/3)) ([405dd2a](https://github.com/logusivam/forkroom/commit/405dd2a6d44c3233faa653e3a496ee92505f85fb))
+
 ### 0.1.1 (2026-08-15)
 
 
