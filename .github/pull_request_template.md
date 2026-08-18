@@ -1,6 +1,8 @@
 ## Description
 Please include a summary of the changes and the related issue.
 
+## fixes #
+
 ## Type of change
 - [ ] Bug fix (non-breaking change which fixes an issue)
 - [ ] New feature (non-breaking change which adds functionality)
