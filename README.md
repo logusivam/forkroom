@@ -1,7 +1,7 @@
 # Forkroom — Complete Project Reference
 
 > **Fork together. Ship faster.**  
-> Built by **Loganathan G P** · Logusivam Vision · © 2026–present
+> Built by **Loganathan G P** · Logusivam Vision · © 2026
 
 ---
 
@@ -17,7 +17,7 @@
 8. [Application Workflow Diagram](#8-application-workflow-diagram)
 9. [Database / State — Collections & Data Flow](#9-database--state--collections--data-flow)
 10. [Setup Guide](#10-setup-guide)
-11. [Chat & Reference Links](#11-chat--reference-links)
+11. [Reference Links](#11-reference-links)
 12. [Colour Codes & Font Families](#12-colour-codes--font-families)
 13. [Logo Design — Reasoning](#13-logo-design--reasoning)
 
@@ -1124,7 +1124,7 @@ cd client && npm run build
 
 ---
 
-## 11. Chat & Reference Links
+## 11. Reference Links
 
 ### Project Repository
 
@@ -1143,19 +1143,7 @@ cd client && npm run build
 |---|---|
 | GitHub Profile | https://github.com/logusivam |
 | Organisation | Logusivam Vision |
-
-### AI Conversation Sessions (Project Design & Build)
-
-> _(Add links to the relevant Antigravity / ChatGPT / Claude conversation sessions used to design and build this project here as they accumulate.)_
-
-| Session | Topic | Link |
-|---|---|---|
-| Logo design | Forkroom logo creation | _(add link)_ |
-| Frontend code | Client implementation | _(add link)_ |
-| Backend code | Server implementation | _(add link)_ |
-| Documentation | Doc generation | _(add link)_ |
-| Test strategy | Testing and deployment | _(add link)_ |
-
+ 
 ### Key Library References
 
 | Library | Documentation |
@@ -1249,12 +1237,6 @@ Used only as non-text UI fills (WCAG 1.4.11 — 3:1 threshold applies).
 
 ## 13. Logo Design — Reasoning
 
-> _(Content to be filled in by the author. Section title reserved below.)_
-
-### Why This Logo?
-
-_(Add your reasoning here about the logo design decisions, symbolism, and design philosophy behind the Forkroom icon.)_
-
 ### Logo Concept Summary
 
 A **git fork icon** — one base circle splitting into two upward bezier branches — with a **cursor blink underscore** on the active right branch. No text needed. Universally understood by developers.
@@ -1281,4 +1263,4 @@ A **git fork icon** — one base circle splitting into two upward bezier branche
 ---
 
 *Forkroom — Real-Time Collaborative Code Editor*  
-*Built by Loganathan G P · Logusivam Vision · MIT Licence · © 2026–present*
+*Built by Loganathan G P · Logusivam Vision · MIT Licence · © 2026*
