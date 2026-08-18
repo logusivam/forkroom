@@ -1,6 +1,14 @@
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.1.3](https://github.com/logusivam/forkroom/compare/v0.1.2...v0.1.3) (2026-08-18)
+
+
+### Bug Fixes
+
+* Updated the documentation ([#9](https://github.com/logusivam/forkroom/issues/9)) ([959e141](https://github.com/logusivam/forkroom/commit/959e1410ddf49d42817a94e96ac77ff09f47b2ab))
+
 ### [0.1.2](https://github.com/logusivam/forkroom/compare/v0.1.1...v0.1.2) (2026-08-18)
 
 
