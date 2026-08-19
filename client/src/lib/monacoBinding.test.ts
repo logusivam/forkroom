@@ -29,7 +29,7 @@ describe('monacoBinding', () => {
     changeListeners = []
     mockModel = {
       setValue: vi.fn(),
-      getValue: vi.fn(),
+      getValue: vi.fn().mockReturnValue(''),
       getPositionAt: vi.fn().mockReturnValue({ lineNumber: 1, column: 1 }),
       applyEdits: vi.fn(),
       onDidChangeContent: vi.fn().mockImplementation((listener) => {
@@ -42,7 +42,9 @@ describe('monacoBinding', () => {
   it('should initialize Monaco model with Yjs text value', () => {
     yText.insert(0, 'Hello World')
     const cleanup = bindYTextToMonaco(yText, mockModel)
-    expect(mockModel.setValue).toHaveBeenCalledWith('Hello World')
+    expect(mockModel.applyEdits).toHaveBeenCalledWith(
+      expect.arrayContaining([expect.objectContaining({ text: 'Hello World' })])
+    )
     cleanup()
   })
 

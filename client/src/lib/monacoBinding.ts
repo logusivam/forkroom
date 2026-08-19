@@ -11,9 +11,11 @@ export function bindYTextToMonaco(yText: Y.Text, model: monaco.editor.ITextModel
   const localContent = model.getValue()
   if (remoteContent !== localContent) {
     isApplyingRemoteChanges = true
+    const start = model.getPositionAt(0)
+    const end = model.getPositionAt(localContent.length)
     model.applyEdits([
       {
-        range: model.getFullModelRange(),
+        range: new monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
         text: remoteContent,
       },
     ])
