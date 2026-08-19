@@ -1,6 +1,14 @@
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.1.8](https://github.com/logusivam/forkroom/compare/v0.1.7...v0.1.8) (2026-08-19)
+
+
+### Bug Fixes
+
+* **client:** allow data: URIs in font-src CSP for Monaco codicon font ([#14](https://github.com/logusivam/forkroom/issues/14)) ([8d7d174](https://github.com/logusivam/forkroom/commit/8d7d174f465ec56bafb328c1701d7b44c34c1a8d))
+
 ### [0.1.7](https://github.com/logusivam/forkroom/compare/v0.1.6...v0.1.7) (2026-08-19)
 
 
