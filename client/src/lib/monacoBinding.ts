@@ -1,16 +1,24 @@
 import * as Y from 'yjs'
 import * as monaco from 'monaco-editor'
 
-export function bindYTextToMonaco(
-  yText: Y.Text,
-  model: monaco.editor.ITextModel
-): () => void {
+export function bindYTextToMonaco(yText: Y.Text, model: monaco.editor.ITextModel): () => void {
   let isApplyingRemoteChanges = false
 
-  // Initial sync from Y.Doc to Monaco
-  isApplyingRemoteChanges = true
-  model.setValue(yText.toString())
-  isApplyingRemoteChanges = false
+  // Initial sync from Y.Doc to Monaco using applyEdits to avoid a full model
+  // reset (which triggers Monaco to re-render and reposition the IME textarea,
+  // causing the visible textarea artifact at line 1 for remote users).
+  const remoteContent = yText.toString()
+  const localContent = model.getValue()
+  if (remoteContent !== localContent) {
+    isApplyingRemoteChanges = true
+    model.applyEdits([
+      {
+        range: model.getFullModelRange(),
+        text: remoteContent,
+      },
+    ])
+    isApplyingRemoteChanges = false
+  }
 
   // Remote changes: Y.Text → Monaco
   const observer = (event: Y.YTextEvent, transaction: Y.Transaction) => {
@@ -24,12 +32,7 @@ export function bindYTextToMonaco(
         const start = model.getPositionAt(index)
         const end = model.getPositionAt(index + op.delete)
         edits.push({
-          range: new monaco.Range(
-            start.lineNumber,
-            start.column,
-            end.lineNumber,
-            end.column
-          ),
+          range: new monaco.Range(start.lineNumber, start.column, end.lineNumber, end.column),
           text: '',
         })
       } else if (op.insert) {

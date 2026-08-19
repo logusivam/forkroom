@@ -1,6 +1,13 @@
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+### [0.1.6](https://github.com/logusivam/forkroom/compare/v0.1.5...v0.1.6) (2026-08-19)
+
+
+### Bug Fixes
+
+* **client:** allow Monaco styles and web workers in CSP ([#12](https://github.com/logusivam/forkroom/issues/12)) ([4216e66](https://github.com/logusivam/forkroom/commit/4216e66adb7bd80d4c1759a1e742b5a7a38a8350))
+
 ### [0.1.5](https://github.com/logusivam/forkroom/compare/v0.1.4...v0.1.5) (2026-08-19)
 
 
