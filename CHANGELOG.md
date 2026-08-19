@@ -1,6 +1,13 @@
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+### [0.1.7](https://github.com/logusivam/forkroom/compare/v0.1.6...v0.1.7) (2026-08-19)
+
+
+### Bug Fixes
+
+* **client:** use applyEdits for initial Yjs sync to fix IME textarea offset for remote users ([#13](https://github.com/logusivam/forkroom/issues/13)) ([4940e07](https://github.com/logusivam/forkroom/commit/4940e0757a6e3d38d301c190bc8dccef5ed7b614))
+
 ### [0.1.6](https://github.com/logusivam/forkroom/compare/v0.1.5...v0.1.6) (2026-08-19)
 
 
