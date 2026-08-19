@@ -1,6 +1,14 @@
 # Changelog
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+
+### [0.1.5](https://github.com/logusivam/forkroom/compare/v0.1.4...v0.1.5) (2026-08-19)
+
+
+### Bug Fixes
+
+* **client:** allow Monaco loader script from JSDelivr CDN in CSP ([#11](https://github.com/logusivam/forkroom/issues/11)) ([6c22a0c](https://github.com/logusivam/forkroom/commit/6c22a0cc0e5d4c207ce6add979baf2362c7462db))
+
 ### [0.1.4](https://github.com/logusivam/forkroom/compare/v0.1.3...v0.1.4) (2026-08-18)
 ### [0.1.3](https://github.com/logusivam/forkroom/compare/v0.1.2...v0.1.3) (2026-08-18)
 
