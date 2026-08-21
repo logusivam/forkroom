@@ -109,7 +109,20 @@ function runStressTest(concurrency, durationMs) {
   });
 }
 
-runStressTest(10000, 8000).then((res) => {
-  console.log('\n--- BENCHMARK COMPLETED ---');
-  console.log(JSON.stringify(res, null, 2));
-}).catch(console.error);
+async function main() {
+  const steps = [500, 1000, 2000, 5000, 10000];
+  const results = [];
+  
+  for (const step of steps) {
+    await new Promise(r => setTimeout(r, 1000));
+    const duration = step === 10000 ? 8000 : 5000;
+    const res = await runStressTest(step, duration);
+    results.push(res);
+    console.log(`Results for ${step} connections: p50=${res.p50}ms, p99=${res.p99}ms, req/sec=${res.reqPerSec}, failure=${res.failureRate}%`);
+  }
+
+  console.log('\n--- FINAL RESULTS ---');
+  console.log(JSON.stringify(results, null, 2));
+}
+
+main().catch(console.error);
