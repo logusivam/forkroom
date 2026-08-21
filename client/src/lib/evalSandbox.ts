@@ -220,6 +220,126 @@ export function runCode(code: string, language: string = 'javascript'): string {
 
   const lang = language.toLowerCase()
 
+  const createMockDOMElement = (id: string) => {
+    const listeners: Record<string, Function[]> = {}
+    const dummyEl: Record<string, any> = {
+      addEventListener: (event: string, callback: Function) => {
+        if (!listeners[event]) {
+          listeners[event] = []
+        }
+        listeners[event].push(callback)
+      },
+      removeEventListener: (event: string, callback: Function) => {
+        if (listeners[event]) {
+          listeners[event] = listeners[event].filter((cb) => cb !== callback)
+        }
+      },
+      setAttribute: () => {},
+      getAttribute: () => null,
+      removeAttribute: () => {},
+      style: {},
+      classList: {
+        add: () => {},
+        remove: () => {},
+        toggle: () => {},
+        contains: () => false,
+      },
+      click: () => {
+        if (listeners['click']) {
+          listeners['click'].forEach((cb) => cb())
+        }
+      },
+      focus: () => {
+        if (listeners['focus']) {
+          listeners['focus'].forEach((cb) => cb())
+        }
+      },
+      blur: () => {
+        if (listeners['blur']) {
+          listeners['blur'].forEach((cb) => cb())
+        }
+      },
+      innerHTML: '',
+      innerText: '',
+      textContent: '',
+      value: '',
+    }
+    return new Proxy(dummyEl, {
+      get(target, prop) {
+        if (prop in target) {
+          return target[prop as string]
+        }
+        return () => {}
+      },
+      set(target, prop, value) {
+        target[prop as string] = value
+        return true
+      },
+    })
+  }
+
+  const proxiedDocument = new Proxy(window.document, {
+    get(target, prop) {
+      if (prop === 'getElementById') {
+        return (id: string) => {
+          const el = target.getElementById(id)
+          if (el) return el
+          return createMockDOMElement(id)
+        }
+      }
+      if (prop === 'querySelector') {
+        return (selector: string) => {
+          const el = target.querySelector(selector)
+          if (el) return el
+          return createMockDOMElement(selector)
+        }
+      }
+      if (prop === 'querySelectorAll') {
+        return (selector: string) => {
+          const list = target.querySelectorAll(selector)
+          if (list && list.length > 0) return list
+          const arr = [createMockDOMElement(selector)]
+          return Object.assign(arr, {
+            item: (index: number) => arr[index] || null,
+          })
+        }
+      }
+      if (prop === 'getElementsByClassName') {
+        return (className: string) => {
+          const list = target.getElementsByClassName(className)
+          if (list && list.length > 0) return list
+          const arr = [createMockDOMElement(className)]
+          return Object.assign(arr, {
+            item: (index: number) => arr[index] || null,
+          })
+        }
+      }
+      if (prop === 'getElementsByTagName') {
+        return (tagName: string) => {
+          const list = target.getElementsByTagName(tagName)
+          if (list && list.length > 0) return list
+          const arr = [createMockDOMElement(tagName)]
+          return Object.assign(arr, {
+            item: (index: number) => arr[index] || null,
+          })
+        }
+      }
+      const val = target[prop as keyof Document]
+      if (typeof val === 'function') {
+        return (val as Function).bind(target)
+      }
+      return val
+    },
+  })
+
+  // Shadow global document and alert in this scope so eval resolves to proxiedDocument and customized alert
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const document = proxiedDocument
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const alert = (msg: unknown) => {
+    logs.push('[Alert] ' + String(msg))
+  }
+
   try {
     if (lang === 'javascript' || lang === 'typescript') {
       let codeToRun = code

@@ -96,7 +96,7 @@ print(f"Character count: {len(longest_word)}")
     `
     const output = runCode(code, 'python')
     expect(output).toContain("The longest word is: 'Learning'")
-    expect(output).toContain("Character count: 8")
+    expect(output).toContain('Character count: 8')
   })
 
   it('should execute Python code containing string slicing syntax', () => {
@@ -109,7 +109,19 @@ print(f"Original: {message}")
 print(f"Reversed: {reverse_string(message)}")
     `
     const output = runCode(code, 'python')
-    expect(output).toContain("Original: Python")
-    expect(output).toContain("Reversed: nohtyP")
+    expect(output).toContain('Original: Python')
+    expect(output).toContain('Reversed: nohtyP')
+  })
+
+  it('should execute JS DOM query selection and addEventListener without crashing', () => {
+    const code = `
+      const button = document.getElementById('action-btn');
+      button.addEventListener('click', () => {
+        alert('Hello! Thanks for clicking.');
+      });
+      button.click();
+    `
+    const output = runCode(code, 'javascript')
+    expect(output).toContain('[Alert] Hello! Thanks for clicking.')
   })
 })
