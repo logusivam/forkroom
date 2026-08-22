@@ -60,9 +60,11 @@ export function registerRoomHandler(io, socket) {
     });
 
     socket.to(roomId).emit("user-joined", { id: socket.id, name, colour });
-    // Convert Map values to array for client transmission
-    const userList = Array.from(room.users.values());
-    socket.emit("room-state", { users: userList, language: room.language });
+    // Broadcast room-state with Map values spread (OPT-08)
+    socket.emit("room-state", {
+      users: [...(roomStore.get(roomId)?.users.values() ?? [])],
+      language: room.language,
+    });
 
     logger.info({ roomId, name, userCount: room.users.size }, "user joined");
   });
