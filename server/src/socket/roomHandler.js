@@ -5,7 +5,7 @@ import { logger } from "../utils/logger.js";
 const joinAttempts = new Map(); // socketId → { count, resetAt }
 
 export function registerRoomHandler(io, socket) {
-  socket.on("join-room", ({ roomId, name, colour }) => {
+  socket.on("join-room", ({ roomId, name, colour, clientTimestamp }) => {
     // Rate limit: max 10 join-room per socket per minute
     const now = Date.now();
     const entry = joinAttempts.get(socket.id) || {
@@ -64,6 +64,7 @@ export function registerRoomHandler(io, socket) {
     socket.emit("room-state", {
       users: [...(roomStore.get(roomId)?.users.values() ?? [])],
       language: room.language,
+      clientTimestamp,
     });
 
     logger.info({ roomId, name, userCount: room.users.size }, "user joined");
