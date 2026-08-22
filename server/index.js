@@ -25,11 +25,21 @@ const httpServer = createServer(app)
 // Socket.io — room events, presence, language, run-code
 const io = new Server(httpServer, {
   cors: { origin: CLIENT_URL, methods: ['GET', 'POST'] },
+  transports: ['websocket'],       // WS only — no polling fallback (OPT-06)
+  httpCompression: false,          // Socket.io polling fallback compression — off
+  perMessageDeflate: false,        // Socket.io WS compression — off
+  maxHttpBufferSize: 10 * 1024 * 1024, // 10MB limit (OPT-06)
+  pingTimeout: 20000,
+  pingInterval: 25000,
 })
 io.on('connection', (socket) => registerRoomHandler(io, socket))
 
 // y-websocket — Yjs CRDT sync, mounted on /yjs path (same port as Socket.io)
-const wss = new WebSocket.Server({ noServer: true })
+const wss = new WebSocket.Server({
+  noServer: true,
+  perMessageDeflate: false,       // eliminate compress overhead on binary CRDT frames (OPT-01)
+  maxPayload: 5 * 1024 * 1024,    // reject malformed oversized frames early (5 MB cap) (OPT-01)
+})
 wss.on('connection', (ws, req) => {
   const origin = req.headers.origin
   if (CLIENT_URL && origin !== CLIENT_URL) {

@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node index.js",
+    "start": "node --max-old-space-size=1024 index.js",
     "dev": "nodemon index.js",
     "test": "vitest run",
     "lint": "eslint . --max-warnings 0"

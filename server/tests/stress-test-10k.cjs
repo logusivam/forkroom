@@ -110,12 +110,12 @@ function runStressTest(concurrency, durationMs) {
 }
 
 async function main() {
-  const steps = [500, 1000, 2000, 5000, 10000];
+  const steps = [500, 1000, 2000, 5000, 10000, 15000];
   const results = [];
   
   for (const step of steps) {
     await new Promise(r => setTimeout(r, 1000));
-    const duration = step === 10000 ? 8000 : 5000;
+    const duration = step >= 10000 ? 8000 : 5000;
     const res = await runStressTest(step, duration);
     results.push(res);
     console.log(`Results for ${step} connections: p50=${res.p50}ms, p99=${res.p99}ms, req/sec=${res.reqPerSec}, failure=${res.failureRate}%`);

@@ -35,7 +35,19 @@ export function MonacoPanel({ provider, language, onEditorMount, onRunCode }: Mo
       provider.awareness.setLocalStateField('cursor', { anchor, head })
     }
 
-    const disposable = editor.onDidChangeCursorSelection(updateAwarenessCursor)
+    // Throttle cursor selection changes to 50ms (max 20 updates/second) to reduce WebSocket traffic
+    let inThrottle = false
+    const throttledUpdateCursor = () => {
+      if (!inThrottle) {
+        updateAwarenessCursor()
+        inThrottle = true
+        setTimeout(() => {
+          inThrottle = false
+        }, 50)
+      }
+    }
+
+    const disposable = editor.onDidChangeCursorSelection(throttledUpdateCursor)
     const interval = setInterval(updateAwarenessCursor, 1000)
 
     // Add Ctrl+Enter shortcut listener to run code

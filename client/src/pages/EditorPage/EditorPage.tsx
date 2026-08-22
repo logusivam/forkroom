@@ -44,7 +44,7 @@ export function EditorPage() {
     }
   }, [roomId, navigate])
 
-  const { socket, users, toasts, setToasts } = useRoom(roomId || '', name, colour)
+  const { socket, users, toasts, setToasts, error: roomError } = useRoom(roomId || '', name, colour)
   const { provider, ydoc } = useYjs(roomId || '', name, colour, editor)
   const connectionStatus = useConnectionStatus(provider)
   const { output, executeCode, clearOutput } = useCodeRunner(
@@ -54,6 +54,13 @@ export function EditorPage() {
     ydoc,
     language
   )
+
+  useEffect(() => {
+    if (roomError) {
+      alert(roomError)
+      navigate('/')
+    }
+  }, [roomError, navigate])
 
   // Listen to remote language updates
   useEffect(() => {
