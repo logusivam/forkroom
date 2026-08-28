@@ -138,6 +138,8 @@ Naive "last write wins" = one user's work silently disappears. Two solutions exi
 | Config | dotenv | ^16.4.5 | Load env vars from `.env` |
 | Rate Limiting | express-rate-limit | ^8.5.2 | HTTP endpoint rate limiting |
 | Logging | pino | ^9.4.0 | Structured JSON logging |
+| WS Accelerator | bufferutil | ^4.1.0 | Native C++ binary acceleration for WebSocket frame masking/unmasking |
+| WS Validator | utf-8-validate | ^6.0.6 | Native C++ validation for UTF-8 payloads on WebSockets |
 
 ### Deployment
 
@@ -360,9 +362,13 @@ forkroom/                                          ← GitHub repo root (monorep
 │   │       └── logger.js                         ← pino structured JSON logger
 │   │
 │   ├── tests/
-│   │   └── integration/
-│   │       ├── health.test.js                    ← GET /health → 200 + { status, timestamp, activeRooms }
-│   │       └── socket-events.test.js             ← join-room, leave-room, disconnect, rate-limit, language
+│   │   ├── integration/
+│   │   │   ├── health.test.js                    ← GET /health → 200 + { status, timestamp, activeRooms }
+│   │   │   └── socket-events.test.js             ← join-room, leave-room, disconnect, rate-limit, language
+│   │   ├── validation-tests.cjs                  ← Validation harness (Yjs burst, throttling, soak test)
+│   │   ├── stress-test.js                        ← Standard HTTP stress test (git ignored)
+│   │   ├── stress-test-10k.cjs                   ← 10k connection stress test utility (git ignored)
+│   │   └── stress-test-ws-join.cjs               ← Staggered paced RTT socket stress test (git ignored)
 │   │
 │   ├── eslint.config.js                          ← ESLint v9 flat config (Node.js + globals)
 │   ├── index.js                                  ← Entry: Express + Socket.io + y-websocket on /yjs path
@@ -724,6 +730,8 @@ There is no database in Forkroom v1. All state is held in:
 | `dotenv` | ^16.4.5 | Environment variable loader |
 | `express-rate-limit` | ^8.5.2 | HTTP endpoint rate limiting |
 | `pino` | ^9.4.0 | Structured JSON logging |
+| `bufferutil` | ^4.1.0 | Native C++ WebSocket frame masking/unmasking accelerator |
+| `utf-8-validate` | ^6.0.6 | Native C++ WebSocket UTF-8 payload validator |
 
 #### Dev Dependencies
 
