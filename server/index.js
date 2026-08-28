@@ -22,6 +22,32 @@ app.use(errorHandler)
 
 const httpServer = createServer(app)
 
+// Native TCP Socket Configuration (Disable Nagle's algorithm)
+httpServer.on('connection', (socket) => {
+  socket.setNoDelay(true);
+  socket.setKeepAlive(true, 30000);
+  if (socket._writableState) {
+    socket._writableState.highWaterMark = 64 * 1024;
+  }
+});
+
+// y-websocket — Yjs CRDT sync, mounted on /yjs path (same port as Socket.io)
+const wss = new WebSocket.Server({
+  noServer: true,
+  perMessageDeflate: false,       // eliminate compress overhead on binary CRDT frames (OPT-01)
+  maxPayload: 5 * 1024 * 1024,    // reject malformed oversized frames early (5 MB cap) (OPT-01)
+})
+
+// Register upgrade handler first to intercept yjs upgrades before Engine.io
+httpServer.on('upgrade', (request, socket, head) => {
+  const url = request.url || ''
+  if (url.startsWith('/yjs/')) {
+    wss.handleUpgrade(request, socket, head, (ws) => {
+      wss.emit('connection', ws, request)
+    })
+  }
+})
+
 // Socket.io — room events, presence, language, run-code
 const io = new Server(httpServer, {
   cors: { origin: CLIENT_URL, methods: ['GET', 'POST'] },
@@ -34,29 +60,16 @@ const io = new Server(httpServer, {
 })
 io.on('connection', (socket) => registerRoomHandler(io, socket))
 
-// y-websocket — Yjs CRDT sync, mounted on /yjs path (same port as Socket.io)
-const wss = new WebSocket.Server({
-  noServer: true,
-  perMessageDeflate: false,       // eliminate compress overhead on binary CRDT frames (OPT-01)
-  maxPayload: 5 * 1024 * 1024,    // reject malformed oversized frames early (5 MB cap) (OPT-01)
-})
+const allowedOrigins = new Set(CLIENT_URL ? [CLIENT_URL] : []);
+
 wss.on('connection', (ws, req) => {
   const origin = req.headers.origin
-  if (CLIENT_URL && origin !== CLIENT_URL) {
+  if (CLIENT_URL && origin && !allowedOrigins.has(origin)) {
     logger.warn({ origin }, 'WS connection rejected — origin not allowed')
     ws.close(1008, 'Origin not allowed')
     return
   }
   setupWSConnection(ws, req)
-})
-
-httpServer.on('upgrade', (request, socket, head) => {
-  const url = request.url || ''
-  if (url.startsWith('/yjs/')) {
-    wss.handleUpgrade(request, socket, head, (ws) => {
-      wss.emit('connection', ws, request)
-    })
-  }
 })
 
 httpServer.listen(PORT, '0.0.0.0', () => {
