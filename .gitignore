@@ -40,3 +40,7 @@ doc
 implementation_plan.md
 err.md
 forkroom.md
+tokenforge.md
+stress-test
+server/tests/stress-*
+server/tests/validation-*
