@@ -5,7 +5,7 @@ import { SOCKET_EVENTS } from '../constants/socket-events'
 
 const SOCKET_URL = import.meta.env.VITE_SERVER_URL || 'ws://localhost:3001'
 
-function deserializeUsers(buffer: ArrayBuffer | Uint8Array): RoomUser[] {
+function deserializeUsers(buffer: ArrayBuffer | ArrayBufferView): RoomUser[] {
   const buf = buffer instanceof ArrayBuffer ? buffer : buffer.buffer
   const byteOffset = buffer instanceof ArrayBuffer ? 0 : buffer.byteOffset
   const byteLength = buffer instanceof ArrayBuffer ? buffer.byteLength : buffer.byteLength
@@ -34,12 +34,12 @@ function deserializeUsers(buffer: ArrayBuffer | Uint8Array): RoomUser[] {
     const colour = decoder.decode(uint8.subarray(offset, offset + colourLen))
     offset += colourLen
 
-    users.push({ id, name, colour })
+    users.push({ id, name, colour, joinedAt: Date.now() })
   }
   return users
 }
 
-function deserializeRoomState(buffer: ArrayBuffer | Uint8Array) {
+function deserializeRoomState(buffer: ArrayBuffer | ArrayBufferView) {
   const buf = buffer instanceof ArrayBuffer ? buffer : buffer.buffer
   const byteOffset = buffer instanceof ArrayBuffer ? 0 : buffer.byteOffset
   const byteLength = buffer instanceof ArrayBuffer ? buffer.byteLength : buffer.byteLength
@@ -113,7 +113,7 @@ export function useRoom(roomId: string, name: string, colour: string) {
     socketInstance.on(SOCKET_EVENTS.ROOM_STATE, ({ users: roomUsers }: { users: any }) => {
       if (Array.isArray(roomUsers)) {
         const mapped = roomUsers.map((u) =>
-          Array.isArray(u) ? { id: u[0], name: u[1], colour: u[2] } : u
+          Array.isArray(u) ? { id: u[0], name: u[1], colour: u[2], joinedAt: Date.now() } : u
         )
         setUsers(mapped)
       } else {
@@ -126,7 +126,9 @@ export function useRoom(roomId: string, name: string, colour: string) {
       if (user instanceof ArrayBuffer || ArrayBuffer.isView(user)) {
         u = deserializeUsers(user)[0]
       } else {
-        u = Array.isArray(user) ? { id: user[0], name: user[1], colour: user[2] } : user
+        u = Array.isArray(user)
+          ? { id: user[0], name: user[1], colour: user[2], joinedAt: Date.now() }
+          : user
       }
       setUsers((prev) => [...prev.filter((x) => x.id !== u.id), u])
       const toastId = Math.random().toString(36).substring(2, 9)

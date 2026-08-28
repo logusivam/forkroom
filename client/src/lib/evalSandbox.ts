@@ -220,16 +220,17 @@ export function runCode(code: string, language: string = 'javascript'): string {
 
   const lang = language.toLowerCase()
 
-  const createMockDOMElement = (id: string) => {
-    const listeners: Record<string, Function[]> = {}
+  const createMockDOMElement = (..._args: any[]) => {
+    void _args
+    const listeners: Record<string, ((...args: any[]) => any)[]> = {}
     const dummyEl: Record<string, any> = {
-      addEventListener: (event: string, callback: Function) => {
+      addEventListener: (event: string, callback: (...args: any[]) => any) => {
         if (!listeners[event]) {
           listeners[event] = []
         }
         listeners[event].push(callback)
       },
-      removeEventListener: (event: string, callback: Function) => {
+      removeEventListener: (event: string, callback: (...args: any[]) => any) => {
         if (listeners[event]) {
           listeners[event] = listeners[event].filter((cb) => cb !== callback)
         }
@@ -326,19 +327,19 @@ export function runCode(code: string, language: string = 'javascript'): string {
       }
       const val = target[prop as keyof Document]
       if (typeof val === 'function') {
-        return (val as Function).bind(target)
+        return (val as (...args: any[]) => any).bind(target)
       }
       return val
     },
   })
 
   // Shadow global document and alert in this scope so eval resolves to proxiedDocument and customized alert
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const document = proxiedDocument
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const alert = (msg: unknown) => {
     logs.push('[Alert] ' + String(msg))
   }
+  void document
+  void alert
 
   try {
     if (lang === 'javascript' || lang === 'typescript') {
